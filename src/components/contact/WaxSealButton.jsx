@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /**
@@ -14,6 +14,14 @@ const WaxSealButton = ({
   children = "Send Message",
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile("ontouchstart" in window);
+    };
+    checkMobile();
+  }, []);
 
   // Determine button state
   const getButtonState = () => {
@@ -41,13 +49,14 @@ const WaxSealButton = ({
       type="submit"
       onClick={onClick}
       disabled={disabled || isLoading}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
+      onMouseLeave={() => !isMobile && setIsHovered(false)}
       className={`btn btn-primary w-full py-3 text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden isolate ${className}`}
       whileTap={!disabled && !isLoading ? { scale: 0.98 } : {}}
       transition={{ duration: 0.15 }}
+      style={{ willChange: "transform" }}
     >
-      {/* Success state background glow - contained */}
+      {/* Success state background glow - optimized */}
       {buttonState === "success" && (
         <motion.div
           className="absolute inset-0 bg-green-500/20 rounded-[inherit]"
@@ -61,17 +70,19 @@ const WaxSealButton = ({
         />
       )}
 
-      {/* Background shimmer effect on hover */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-[inherit]"
-        initial={{ x: "-100%" }}
-        animate={{ x: isHovered && !isLoading ? "100%" : "-100%" }}
-        transition={{
-          duration: 0.6,
-          ease: "easeInOut",
-        }}
-        style={{ zIndex: 1 }}
-      />
+      {/* Background shimmer effect - disabled on mobile for performance */}
+      {!isMobile && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-[inherit]"
+          initial={{ x: "-100%" }}
+          animate={{ x: isHovered && !isLoading ? "100%" : "-100%" }}
+          transition={{
+            duration: 0.6,
+            ease: "easeInOut",
+          }}
+          style={{ zIndex: 1, willChange: "transform" }}
+        />
+      )}
 
       {/* Button content */}
       <div className="relative z-10 flex items-center justify-center gap-3">
@@ -83,7 +94,7 @@ const WaxSealButton = ({
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 180 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <LoadingSpinner />
             </motion.div>

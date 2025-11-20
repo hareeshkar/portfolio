@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ContactForm from "./contact/ContactForm";
 import ContactInfo from "./contact/ContactInfo";
@@ -24,26 +24,55 @@ const TechSeparator = () => (
   </div>
 );
 
-const AlchemyTextReveal = ({ children, className }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-    whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-    viewport={{ once: true, margin: "-10%" }}
-    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} // Smoother ease for nicer feel
-    className={className}
-  >
-    {children}
-  </motion.div>
-);
+const AlchemyTextReveal = ({ children, className }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: isMobile ? 15 : 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-5%" }}
+      transition={{
+        duration: isMobile ? 0.6 : 1.2,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className={className}
+      style={{ willChange: "transform, opacity" }}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 const Contact = () => {
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  // Disable parallax on mobile for performance
+  const y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, -50]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <section
@@ -51,27 +80,27 @@ const Contact = () => {
       ref={containerRef}
       className="relative min-h-screen bg-transparent py-24 sm:py-32 overflow-hidden"
     >
-      {/* Background Atmosphere */}
+      {/* Background Atmosphere - REMOVED ALL YELLOW TINTS */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-accent)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-accent)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl bg-[var(--color-accent)]/5 blur-[120px] rounded-full opacity-20" />
+        {/* REMOVED: Yellow accent blur backgrounds completely */}
       </div>
 
       <TechSeparator />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           {/* LEFT COLUMN: Typography & Info (5 cols) */}
           <div className="lg:col-span-5 flex flex-col justify-between h-full">
-            <div className="mb-16 lg:mb-0">
-              <AlchemyTextReveal className="font-cinzel text-6xl md:text-7xl lg:text-8xl text-[var(--color-text-primary)] leading-[0.9] mb-8">
+            <div className="mb-12 lg:mb-0">
+              <AlchemyTextReveal className="font-cinzel text-5xl md:text-6xl lg:text-8xl text-[var(--color-text-primary)] leading-[0.9] mb-6 md:mb-8">
                 Let's <br />
                 <span className="text-[var(--color-accent)] italic font-cormorant font-light">
                   Build It
                 </span>
               </AlchemyTextReveal>
 
-              <AlchemyTextReveal className="text-lg text-[var(--color-text-secondary)] max-w-xl leading-relaxed mb-12">
+              <AlchemyTextReveal className="text-base md:text-lg text-[var(--color-text-secondary)] max-w-xl leading-relaxed mb-8 md:mb-12">
                 <span className="font-semibold text-[var(--color-accent)]">
                   Full-stack systems
                 </span>{" "}
@@ -106,7 +135,10 @@ const Contact = () => {
           </div>
 
           {/* RIGHT COLUMN: Form (7 cols) */}
-          <motion.div style={{ y }} className="lg:col-span-7 lg:mt-12">
+          <motion.div
+            style={{ y: isMobile ? 0 : y }}
+            className="lg:col-span-7 lg:mt-12"
+          >
             <ContactForm />
           </motion.div>
         </div>

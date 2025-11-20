@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SignatureField from "./SignatureField";
 import WaxSealButton from "./WaxSealButton";
@@ -11,6 +11,16 @@ const ContactForm = () => {
   });
   const [status, setStatus] = useState("idle"); // idle, sending, success, error
   const [errorMessage, setErrorMessage] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,31 +54,37 @@ const ContactForm = () => {
     }
   };
 
-  // Animation variants for form fields
+  // Optimized animation variants - mobile-aware
   const fieldVariants = {
-    hidden: { opacity: 0, x: 20 },
+    hidden: {
+      opacity: 0,
+      x: isMobile ? 10 : 20,
+      y: isMobile ? 5 : 0,
+    },
     visible: (i) => ({
       opacity: 1,
       x: 0,
-      transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" },
+      y: 0,
+      transition: {
+        delay: i * (isMobile ? 0.06 : 0.1),
+        duration: isMobile ? 0.4 : 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      },
     }),
   };
 
   return (
     <div className="relative">
       {/* Enhanced Glassmorphism Container */}
-      <div className="relative bg-[var(--color-surface)]/60 backdrop-blur-xl border border-[var(--color-border)]/50 p-8 md:p-10 rounded-2xl overflow-hidden shadow-2xl">
+      <div className="relative bg-[var(--color-surface)]/60 backdrop-blur-xl border border-[var(--color-border)]/50 p-6 md:p-8 lg:p-10 rounded-2xl overflow-hidden shadow-2xl">
         {/* Decorative Corner Accents */}
         <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[var(--color-accent)]" />
         <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-[var(--color-accent)]" />
         <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-[var(--color-accent)]" />
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[var(--color-accent)]" />
 
-        {/* Inner glass reflection */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none rounded-2xl" />
-
-        <div className="mb-8 flex items-center justify-between">
-          <h3 className="font-cinzel text-xl text-[var(--color-text-primary)]">
+        <div className="mb-6 md:mb-8 flex items-center justify-between">
+          <h3 className="font-cinzel text-lg md:text-xl text-[var(--color-text-primary)]">
             START HERE
           </h3>
           <div className="flex items-center gap-2">
@@ -82,14 +98,15 @@ const ContactForm = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
           {/* Name Field */}
           <motion.div
             custom={0}
             variants={fieldVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
+            style={{ willChange: "transform, opacity" }}
           >
             <label
               htmlFor="name"
@@ -113,7 +130,8 @@ const ContactForm = () => {
             variants={fieldVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
+            style={{ willChange: "transform, opacity" }}
           >
             <label
               htmlFor="email"
@@ -130,6 +148,7 @@ const ContactForm = () => {
               onChange={handleChange}
               placeholder="your.email@company.com"
               className="w-full bg-transparent border-b border-[var(--color-border)] py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)]/30 focus:outline-none focus:border-[var(--color-accent)] transition-colors font-mono-tech text-sm"
+              style={{ willChange: "border-color" }}
             />
           </motion.div>
 
@@ -139,7 +158,8 @@ const ContactForm = () => {
             variants={fieldVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
+            style={{ willChange: "transform, opacity" }}
           >
             <label
               htmlFor="message"
@@ -156,6 +176,7 @@ const ContactForm = () => {
               onChange={handleChange}
               placeholder="What are we building? Vision, scope, timeline..."
               className="w-full bg-transparent border-b border-[var(--color-border)] py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)]/30 focus:outline-none focus:border-[var(--color-accent)] transition-colors resize-none font-sans text-base leading-relaxed"
+              style={{ willChange: "border-color" }}
             />
           </motion.div>
 
@@ -165,8 +186,9 @@ const ContactForm = () => {
             variants={fieldVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
-            className="pt-4"
+            viewport={{ once: true, margin: "-10%" }}
+            className="pt-2 md:pt-4"
+            style={{ willChange: "transform, opacity" }}
           >
             <WaxSealButton
               isLoading={status === "sending"}
@@ -179,12 +201,13 @@ const ContactForm = () => {
           </motion.div>
 
           {/* Status Messages */}
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             {status === "error" && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, height: 0, y: -10 }}
+                animate={{ opacity: 1, height: "auto", y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="text-red-500 text-xs font-mono-tech mt-2"
               >
                 ERROR: {errorMessage}
@@ -192,9 +215,10 @@ const ContactForm = () => {
             )}
             {status === "success" && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, height: 0, y: -10 }}
+                animate={{ opacity: 1, height: "auto", y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="text-green-500 text-xs font-mono-tech mt-2"
               >
                 BLUEPRINT RECEIVED. FOUNDATION LAID. EXPECT RESPONSE WITHIN 24
@@ -204,9 +228,6 @@ const ContactForm = () => {
           </AnimatePresence>
         </form>
       </div>
-
-      {/* Background Glow - more subtle */}
-      <div className="absolute -inset-8 bg-[var(--color-accent)]/3 blur-3xl -z-10 rounded-full opacity-40 pointer-events-none" />
     </div>
   );
 };
