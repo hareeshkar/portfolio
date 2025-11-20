@@ -1,10 +1,6 @@
 import { useEffect } from "react";
 
-const PRELOAD_VIDEOS = [
-  "videos/fsc.mp4",
-  "videos/isc.mp4",
-  "videos/aic.mp4",
-];
+const PRELOAD_VIDEOS = ["videos/fsc.mp4", "videos/isc.mp4", "videos/aic.mp4"];
 
 export default function VideoPreloader() {
   useEffect(() => {

@@ -217,7 +217,7 @@ export default function Skills() {
 
           {/* 5. Decorative / Stat Block */}
           <BentoItem
-            className="md:col-span-3 lg:col-span-4 min-h-[120px] max-h-[120px] flex items-center justify-center bg-[var(--color-accent)]/5 !border-[var(--color-accent)]/20"
+            className="md:col-span-3 lg:col-span-4 min-h-[120px] lg:max-h-[120px] flex items-center justify-center bg-[var(--color-accent)]/5 !border-[var(--color-accent)]/20"
             delay={0.5}
           >
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-12 text-center">
