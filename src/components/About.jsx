@@ -399,17 +399,17 @@ export default function About() {
       {
         title: "Full-Stack Architecture",
         desc: "Engineering enterprise-grade platforms like 'The Gadget Hub' with ASP.NET Core.",
-        videoSrc: "/videos/fsc.mp4",
+        videoSrc: "videos/fsc.mp4",
       },
       {
         title: "Intelligent Systems",
         desc: "Pioneering AI integration via facial recognition (OpenCV) and LLM-powered simulators.",
-        videoSrc: "/videos/isc.mp4",
+        videoSrc: "videos/isc.mp4",
       },
       {
         title: "AI-Augmented Dev",
         desc: "Leveraging AI workflows with Cursor and custom VS Code extensions.",
-        videoSrc: "/videos/aic.mp4",
+        videoSrc: "videos/aic.mp4",
       },
     ],
     []
@@ -515,7 +515,7 @@ export default function About() {
                     name="HAREESHKAR RAVI"
                     title="DIGITAL ARCHITECT"
                     handle="ID_94021"
-                    avatarUrl="/profile.jpg"
+                    avatarUrl="profile.jpg"
                     externalSpotlightPosition={spotlightPos}
                     isAutoSpotlightActive={Boolean(spotlightPos)}
                   />

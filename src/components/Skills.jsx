@@ -24,32 +24,32 @@ const TechSeparator = () => (
 // Merged Skills Data (Old Real Ones + New Additions)
 const skillsData = {
   frontend: [
-    { name: "React", iconSrc: "/icons/react.svg" },
-    { name: "JavaScript", iconSrc: "/icons/javascript.svg" },
-    { name: "TypeScript", iconSrc: "/icons/typescript.svg" },
-    { name: "Swift", iconSrc: "/icons/swift.svg" }, // Preserved
-    { name: "Tailwind", iconSrc: "/icons/tailwind.svg" },
-    { name: "Framer Motion", iconSrc: "/icons/framer.svg" },
-    { name: "Three.js", iconSrc: "/icons/threejs.svg" },
+    { name: "React", iconSrc: "icons/react.svg" },
+    { name: "JavaScript", iconSrc: "icons/javascript.svg" },
+    { name: "TypeScript", iconSrc: "icons/typescript.svg" },
+    { name: "Swift", iconSrc: "icons/swift.svg" }, // Preserved
+    { name: "Tailwind", iconSrc: "icons/tailwind.svg" },
+    { name: "Framer Motion", iconSrc: "icons/framer.svg" },
+    { name: "Three.js", iconSrc: "icons/threejs.svg" },
   ],
   backend: [
-    { name: "Node.js", iconSrc: "/icons/nodejs.svg" },
-    { name: "Python", iconSrc: "/icons/python.svg" },
-    { name: "Java", iconSrc: "/icons/java.svg" }, // Preserved
-    { name: "C# / .NET", iconSrc: "/icons/csharp.svg" }, // Preserved
-    { name: "PHP", iconSrc: "/icons/php.svg" }, // Preserved
-    { name: "PostgreSQL", iconSrc: "/icons/postgresql.svg" },
-    { name: "MySQL", iconSrc: "/icons/mysql.svg" }, // Moved from Ecosystem
+    { name: "Node.js", iconSrc: "icons/nodejs.svg" },
+    { name: "Python", iconSrc: "icons/python.svg" },
+    { name: "Java", iconSrc: "icons/java.svg" }, // Preserved
+    { name: "C# / .NET", iconSrc: "icons/csharp.svg" }, // Preserved
+    { name: "PHP", iconSrc: "icons/php.svg" }, // Preserved
+    { name: "PostgreSQL", iconSrc: "icons/postgresql.svg" },
+    { name: "MySQL", iconSrc: "icons/mysql.svg" }, // Moved from Ecosystem
   ],
   ai: [
-    { name: "OpenCV", iconSrc: "/icons/opencv.svg" },
-    { name: "TensorFlow", iconSrc: "/icons/tensorflow.svg" },
-    { name: "LLMs", iconSrc: "/icons/ai.svg" },
+    { name: "OpenCV", iconSrc: "icons/opencv.svg" },
+    { name: "TensorFlow", iconSrc: "icons/tensorflow.svg" },
+    { name: "LLMs", iconSrc: "icons/ai.svg" },
   ],
   tools: [
-    { name: "Git", iconSrc: "/icons/git.svg" }, // Preserved
-    { name: "Docker", iconSrc: "/icons/docker.svg" },
-    { name: "Figma", iconSrc: "/icons/figma.svg" },
+    { name: "Git", iconSrc: "icons/git.svg" }, // Preserved
+    { name: "Docker", iconSrc: "icons/docker.svg" },
+    { name: "Figma", iconSrc: "icons/figma.svg" },
   ],
 };
 
