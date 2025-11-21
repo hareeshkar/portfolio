@@ -11,7 +11,31 @@ import SectionObserver from "./components/SectionObserver";
 const About = React.lazy(() => import("./components/About"));
 const Projects = React.lazy(() => import("./components/Projects"));
 const Skills = React.lazy(() => import("./components/Skills"));
-const Contact = React.lazy(() => import("./components/contact"));
+const Contact = React.lazy(() =>
+  import("./components/contact").catch(() => {
+    // Fallback: if chunk fails to load, return a minimal component
+    return {
+      default: () => (
+        <div className="min-h-screen flex items-center justify-center px-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">
+              Contact Section Unavailable
+            </h2>
+            <p className="text-gray-400 mb-4">
+              Please refresh the page or contact directly:
+            </p>
+            <a
+              href="mailto:hello@example.com"
+              className="text-accent hover:underline"
+            >
+              hello@example.com
+            </a>
+          </div>
+        </div>
+      ),
+    };
+  })
+);
 
 // Loading fallback component
 const SectionLoader = () => (
