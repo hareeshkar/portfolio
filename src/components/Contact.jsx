@@ -25,32 +25,18 @@ const TechSeparator = () => (
 );
 
 const AlchemyTextReveal = ({ children, className }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
+  // Removed state-based animation to prevent hydration mismatch and jumps on mobile
   return (
     <motion.div
-      initial={{ opacity: 0, y: isMobile ? 10 : 20 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ 
-        once: true, 
-        margin: isMobile ? "-10%" : "-5%",
-        amount: isMobile ? 0.3 : 0.5
-      }}
+      viewport={{ once: true, margin: "-10%" }}
       transition={{
-        duration: isMobile ? 0.5 : 1.2,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 0.8,
+        ease: "easeOut",
       }}
       className={className}
-      style={{ willChange: "auto" }}
+      style={{ willChange: "opacity, transform" }}
     >
       {children}
     </motion.div>
@@ -66,6 +52,7 @@ const Contact = () => {
     offset: ["start end", "end start"],
   });
 
+  // Disable parallax on mobile for performance
   const y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, -50]);
 
   useEffect(() => {

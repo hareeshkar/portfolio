@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import BentoItem from "./skills/BentoItem";
 import MetallicIcon from "./skills/MetallicIcon";
@@ -55,25 +55,13 @@ const skillsData = {
 
 export default function Skills() {
   const sectionRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
-  
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
 
-  // Disable parallax on mobile for better performance
-  const y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [50, -50]);
-
-  // Mobile detection
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  // Parallax effect
+  const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   // Preload icons
   useEffect(() => {
@@ -102,19 +90,10 @@ export default function Skills() {
         {/* Header */}
         <div className="mb-12 md:mb-20 border-b border-white/40 pb-8 md:pb-12">
           <motion.div
-            initial={{ opacity: 0, x: isMobile ? -10 : -20 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ 
-              once: true, 
-              margin: isMobile ? "-5%" : "-10%",
-              amount: isMobile ? 0.3 : 0.5
-            }}
-            transition={{
-              duration: isMobile ? 0.5 : 0.8,
-              ease: [0.22, 1, 0.36, 1]
-            }}
+            viewport={{ once: true }}
             className="inline-flex items-center gap-3 mb-4 md:mb-6"
-            style={{ willChange: "auto" }}
           >
             <div className="h-[1px] w-8 md:w-12 bg-[var(--color-accent)]"></div>
             <span className="font-mono-tech text-[10px] md:text-xs text-[var(--color-accent)] tracking-[0.3em]">
@@ -123,20 +102,11 @@ export default function Skills() {
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: isMobile ? 15 : 20 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ 
-              once: true,
-              margin: isMobile ? "-5%" : "-10%",
-              amount: isMobile ? 0.3 : 0.5
-            }}
-            transition={{ 
-              duration: isMobile ? 0.6 : 0.8, 
-              delay: isMobile ? 0.05 : 0.1,
-              ease: [0.22, 1, 0.36, 1]
-            }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
             className="font-cinzel text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.9] text-[var(--color-text-primary)] tracking-tight"
-            style={{ willChange: "auto" }}
           >
             Technical <br />
             <span className="font-cormorant italic text-[var(--color-accent)] font-light">
@@ -152,40 +122,26 @@ export default function Skills() {
             className="md:col-span-2 md:row-span-2"
             title="Frontend Engineering"
             subtitle="VISUAL INTERFACE"
-            delay={isMobile ? 0.05 : 0.1}
-            isMobile={isMobile}
+            delay={0.1}
           >
             {/* Responsive Grid for Icons */}
             <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-4">
-              {skillsData.frontend.map((skill, index) => (
-                <motion.div
+              {skillsData.frontend.map((skill) => (
+                <div
                   key={skill.name}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ 
-                    once: true,
-                    margin: isMobile ? "0%" : "-10%",
-                    amount: isMobile ? 0.3 : 0.5
-                  }}
-                  transition={{
-                    duration: isMobile ? 0.3 : 0.5,
-                    delay: isMobile ? index * 0.03 : index * 0.05,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
                   className="flex flex-col items-center gap-2 group/icon"
-                  style={{ willChange: "auto" }}
                 >
-                  <div className="p-2 md:p-3 rounded-lg bg-[var(--color-background)]/50 border border-[var(--color-border)] group-hover/icon:border-[var(--color-accent)] transition-all duration-300 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center">
+                  <div className="p-2 md:p-3 rounded-lg bg-[var(--color-background)]/50 border border-[var(--color-border)] group-hover/icon:border-[var(--color-accent)] transition-colors w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center">
                     <MetallicIcon
                       src={skill.iconSrc}
                       alt={skill.name}
-                      className="w-8 h-8 md:w-10 md:h-10 transition-transform duration-300 group-hover/icon:scale-110"
+                      className="w-8 h-8 md:w-10 md:h-10"
                     />
                   </div>
-                  <span className="text-[10px] sm:text-xs font-mono-tech text-[var(--color-text-secondary)] text-center transition-colors duration-300 group-hover/icon:text-[var(--color-accent)]">
+                  <span className="text-[10px] sm:text-xs font-mono-tech text-[var(--color-text-secondary)] text-center">
                     {skill.name}
                   </span>
-                </motion.div>
+                </div>
               ))}
             </div>
           </BentoItem>
@@ -195,39 +151,25 @@ export default function Skills() {
             className="md:col-span-1 md:row-span-2"
             title="Backend Systems"
             subtitle="CORE LOGIC"
-            delay={isMobile ? 0.1 : 0.2}
-            isMobile={isMobile}
+            delay={0.2}
           >
             <div className="flex flex-col justify-center h-full gap-4 md:gap-5 mt-2">
-              {skillsData.backend.map((skill, index) => (
-                <motion.div
+              {skillsData.backend.map((skill) => (
+                <div
                   key={skill.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ 
-                    once: true,
-                    margin: isMobile ? "0%" : "-5%",
-                    amount: isMobile ? 0.5 : 0.8
-                  }}
-                  transition={{
-                    duration: isMobile ? 0.3 : 0.4,
-                    delay: isMobile ? index * 0.03 : index * 0.05,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
                   className="flex items-center gap-3 md:gap-4 group/icon"
-                  style={{ willChange: "auto" }}
                 >
-                  <div className="p-2 rounded bg-[var(--color-background)]/50 border border-[var(--color-border)] group-hover/icon:border-[var(--color-accent)] transition-all duration-300 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0">
+                  <div className="p-2 rounded bg-[var(--color-background)]/50 border border-[var(--color-border)] group-hover/icon:border-[var(--color-accent)] transition-colors w-10 h-10 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0">
                     <MetallicIcon
                       src={skill.iconSrc}
                       alt={skill.name}
-                      className="w-6 h-6 md:w-8 md:h-8 transition-transform duration-300 group-hover/icon:scale-110"
+                      className="w-6 h-6 md:w-8 md:h-8"
                     />
                   </div>
-                  <span className="text-xs md:text-sm font-mono-tech text-[var(--color-text-secondary)] transition-colors duration-300 group-hover/icon:text-[var(--color-accent)]">
+                  <span className="text-xs md:text-sm font-mono-tech text-[var(--color-text-secondary)]">
                     {skill.name}
                   </span>
-                </motion.div>
+                </div>
               ))}
             </div>
           </BentoItem>
@@ -237,72 +179,44 @@ export default function Skills() {
             className="md:col-span-1 lg:col-span-1 md:row-span-1"
             title="AI Integration"
             subtitle="INTELLIGENCE"
-            delay={isMobile ? 0.15 : 0.3}
-            isMobile={isMobile}
+            delay={0.3}
           >
             <div className="flex flex-wrap gap-2 md:gap-3 mt-4 content-start">
-              {skillsData.ai.map((skill, index) => (
-                <motion.span
+              {skillsData.ai.map((skill) => (
+                <span
                   key={skill.name}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ 
-                    once: true,
-                    margin: isMobile ? "0%" : "-10%",
-                    amount: isMobile ? 0.5 : 0.8
-                  }}
-                  transition={{
-                    duration: isMobile ? 0.3 : 0.4,
-                    delay: isMobile ? index * 0.05 : index * 0.1,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
-                  className="px-2 py-1 md:px-3 text-[10px] font-mono-tech border border-[var(--color-accent)]/30 text-[var(--color-accent)] rounded-full bg-[var(--color-accent)]/5 whitespace-nowrap hover:bg-[var(--color-accent)]/10 transition-all duration-300 cursor-default"
-                  style={{ willChange: "auto" }}
+                  className="px-2 py-1 md:px-3 text-[10px] font-mono-tech border border-[var(--color-accent)]/30 text-[var(--color-accent)] rounded-full bg-[var(--color-accent)]/5 whitespace-nowrap"
                 >
                   {skill.name}
-                </motion.span>
+                </span>
               ))}
             </div>
           </BentoItem>
 
-          {/* 4. Tools (Infrastructure) */}
+          {/* 4. Tools (Infrastructure) - FIX: Better Responsiveness */}
           <BentoItem
             className="md:col-span-2 lg:col-span-1 md:row-span-1"
             title="DevOps & Tools"
             subtitle="INFRASTRUCTURE"
-            delay={isMobile ? 0.2 : 0.4}
-            isMobile={isMobile}
+            delay={0.4}
           >
             <div className="flex justify-around md:justify-between items-center mt-4 px-2 md:px-0 h-full pb-4">
-              {skillsData.tools.map((skill, index) => (
-                <motion.div
+              {skillsData.tools.map((skill) => (
+                <div
                   key={skill.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ 
-                    once: true,
-                    margin: isMobile ? "0%" : "-10%",
-                    amount: isMobile ? 0.5 : 0.8
-                  }}
-                  transition={{
-                    duration: isMobile ? 0.3 : 0.5,
-                    delay: isMobile ? index * 0.05 : index * 0.1,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
                   className="group/icon flex flex-col items-center gap-2"
-                  style={{ willChange: "auto" }}
                 >
-                  <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-12 md:h-12 p-2 rounded-lg bg-[var(--color-background)]/30 border border-transparent group-hover/icon:border-[var(--color-border)] transition-all duration-300">
+                  <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-12 md:h-12 p-2 rounded-lg bg-[var(--color-background)]/30 border border-transparent group-hover/icon:border-[var(--color-border)] transition-all">
                     <MetallicIcon
                       src={skill.iconSrc}
                       alt={skill.name}
-                      className="w-full h-full transition-transform duration-300 group-hover/icon:scale-110"
+                      className="w-full h-full"
                     />
                   </div>
-                  <span className="text-[10px] font-mono-tech text-[var(--color-text-secondary)] opacity-0 group-hover/icon:opacity-100 transition-all duration-300">
+                  <span className="text-[10px] font-mono-tech text-[var(--color-text-secondary)] opacity-0 group-hover/icon:opacity-100 transition-opacity">
                     {skill.name}
                   </span>
-                </motion.div>
+                </div>
               ))}
             </div>
           </BentoItem>
@@ -310,78 +224,35 @@ export default function Skills() {
           {/* 5. Decorative / Stat Block */}
           <BentoItem
             className="md:col-span-3 lg:col-span-4 min-h-[100px] md:min-h-[120px] md:max-h-[120px] flex items-center justify-center bg-[var(--color-accent)]/5 !border-[var(--color-accent)]/20"
-            delay={isMobile ? 0.25 : 0.5}
-            isMobile={isMobile}
+            delay={0.5}
           >
             <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 md:gap-12 text-center w-full justify-center px-2">
-              <motion.div 
-                className="flex flex-col items-center"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ 
-                  once: true,
-                  margin: isMobile ? "0%" : "-10%"
-                }}
-                transition={{
-                  duration: isMobile ? 0.4 : 0.6,
-                  delay: isMobile ? 0.1 : 0.2,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-                style={{ willChange: "auto" }}
-              >
-                <span className="block text-2xl md:text-3xl font-cinzel text-[var(--color-accent)]">
+              <div className="flex flex-col items-center">
+                <span className="block text-2xl md:text-3xl font-cinzel text-[var(--color-accent]">
                   100%
                 </span>
                 <span className="text-[8px] md:text-[10px] font-mono-tech text-[var(--color-text-secondary)] tracking-widest">
                   COMMITMENT
                 </span>
-              </motion.div>
+              </div>
 
               <div className="w-[1px] h-6 md:h-8 bg-[var(--color-accent)]/30" />
 
-              <motion.div 
-                className="flex flex-col items-center"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ 
-                  once: true,
-                  margin: isMobile ? "0%" : "-10%"
-                }}
-                transition={{
-                  duration: isMobile ? 0.4 : 0.6,
-                  delay: isMobile ? 0.15 : 0.3,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-                style={{ willChange: "auto" }}
-              >
+              <div className="flex flex-col items-center">
                 <span className="block text-2xl md:text-3xl font-cinzel text-[var(--color-accent)]">
                   24/7
                 </span>
                 <span className="text-[8px] md:text-[10px] font-mono-tech text-[var(--color-text-secondary)] tracking-widest">
                   UPTIME
                 </span>
-              </motion.div>
+              </div>
 
               <div className="w-[1px] h-6 md:h-8 bg-[var(--color-accent)]/30" />
 
-              <motion.div 
-                className="max-w-[200px] md:max-w-md text-xs md:text-sm text-[var(--color-text-secondary)] font-light italic text-center md:text-left"
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ 
-                  once: true,
-                  margin: isMobile ? "0%" : "-10%"
-                }}
-                transition={{
-                  duration: isMobile ? 0.4 : 0.6,
-                  delay: isMobile ? 0.2 : 0.4,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-                style={{ willChange: "auto" }}
-              >
+              <div className="max-w-[200px] md:max-w-md text-xs md:text-sm text-[var(--color-text-secondary)] font-light italic text-center md:text-left">
                 "Constantly evolving my stack to build faster, scalable, and
                 more resilient systems."
-              </motion.div>
+              </div>
             </div>
           </BentoItem>
         </div>

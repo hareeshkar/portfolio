@@ -1,113 +1,91 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
 import { HiEnvelope } from "react-icons/hi2";
 
-const SocialLink = ({ href, icon: Icon, label, delay }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  return (
-    <motion.a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ opacity: 0, y: isMobile ? 10 : 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{
-        once: true,
-        margin: isMobile ? "-5%" : "-10%",
-        amount: isMobile ? 0.5 : 0.8,
-      }}
-      transition={{
-        delay: isMobile ? delay * 0.5 : delay,
-        duration: isMobile ? 0.4 : 0.5,
-      }}
-      className="group flex items-center gap-4 p-4 border border-[var(--color-border)] hover:border-[var(--color-accent)] bg-[var(--color-surface)]/30 backdrop-blur-sm transition-all duration-300"
-      style={{ willChange: "auto" }}
-    >
-      <div className="p-2 bg-[var(--color-background)] rounded-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
-        <Icon size={20} />
-      </div>
-      <div className="flex flex-col">
-        <span className="font-mono-tech text-[10px] text-[var(--color-text-secondary)] uppercase tracking-widest">
-          {label}
-        </span>
-        <span className="font-cinzel text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
-          Connect
-        </span>
-      </div>
-      <div className="ml-auto opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-[var(--color-accent)]">
-        →
-      </div>
-    </motion.a>
-  );
+// Optimized variants for coordinated animation
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+      when: "beforeChildren",
+    },
+  },
 };
 
+const itemVariants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
+const SocialLink = ({ href, icon: Icon, label }) => (
+  <motion.a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    variants={itemVariants}
+    className="group flex items-center gap-4 p-4 border border-[var(--color-border)] hover:border-[var(--color-accent)] bg-[var(--color-surface)]/30 backdrop-blur-sm transition-all duration-300 active:scale-[0.98]"
+  >
+    <div className="p-2 bg-[var(--color-background)] rounded-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
+      <Icon size={20} />
+    </div>
+    <div className="flex flex-col">
+      <span className="font-mono-tech text-[10px] text-[var(--color-text-secondary)] uppercase tracking-widest">
+        {label}
+      </span>
+      <span className="font-cinzel text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
+        Connect
+      </span>
+    </div>
+    <div className="ml-auto opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-[var(--color-accent)] hidden sm:block">
+      →
+    </div>
+  </motion.a>
+);
+
 const ContactInfo = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-6"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-10% 0px" }}
+      variants={containerVariants}
+    >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SocialLink
           href="mailto:hello@example.com"
           icon={HiEnvelope}
           label="Email Protocol"
-          delay={0.1}
         />
         <SocialLink
           href="https://github.com"
           icon={SiGithub}
           label="Code Repository"
-          delay={0.2}
         />
         <SocialLink
           href="https://linkedin.com"
           icon={SiLinkedin}
           label="Professional Net"
-          delay={0.3}
         />
         <SocialLink
           href="https://x.com"
           icon={SiX}
           label="Broadcast Feed"
-          delay={0.4}
         />
       </div>
 
       {/* Location Data */}
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{
-          once: true,
-          margin: isMobile ? "0%" : "-10%",
-          amount: isMobile ? 0.3 : 0.5,
-        }}
-        transition={{
-          delay: isMobile ? 0.3 : 0.6,
-          duration: isMobile ? 0.5 : 1,
-        }}
+        variants={itemVariants}
         className="mt-12 pt-8 border-t border-[var(--color-border)] flex justify-between items-end"
-        style={{ willChange: "auto" }}
       >
         <div className="flex flex-col gap-2">
           <span className="font-mono-tech text-[10px] text-[var(--color-accent)] tracking-widest">
@@ -123,7 +101,7 @@ const ContactInfo = () => {
           </span>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
