@@ -7,45 +7,55 @@ const BentoItem = ({
   title,
   subtitle,
   delay = 0,
+  isMobile = false,
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: isMobile ? 15 : 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative overflow-hidden bg-[var(--color-surface)]/40 backdrop-blur-md border border-[var(--color-border)] hover:border-[var(--color-accent)]/50 transition-colors duration-500 ${className}`}
-      style={{ isolation: "auto" }} // Explicitly set to auto to prevent isolation
+      viewport={{
+        once: true,
+        margin: isMobile ? "0%" : "-10%",
+        amount: isMobile ? 0.2 : 0.3,
+      }}
+      transition={{
+        duration: isMobile ? 0.4 : 0.8,
+        delay: isMobile ? delay * 0.5 : delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className={`
+        relative p-6 md:p-8
+        bg-[var(--color-surface)]/30
+        backdrop-blur-sm
+        border border-[var(--color-border)]
+        hover:border-[var(--color-accent)]/40
+        transition-all duration-500 ease-out
+        group
+        ${className}
+      `}
+      style={{ willChange: "auto" }}
     >
-      {/* Hover Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
-      {/* Corner Accents */}
-      <div className="absolute top-0 right-0 p-3 opacity-50 group-hover:opacity-100 transition-opacity">
-        <div className="w-2 h-2 border-t border-r border-[var(--color-accent)]" />
-      </div>
-      <div className="absolute bottom-0 left-0 p-3 opacity-50 group-hover:opacity-100 transition-opacity">
-        <div className="w-2 h-2 border-b border-l border-[var(--color-accent)]" />
-      </div>
+      {/* Header */}
+      {(title || subtitle) && (
+        <div className="mb-4">
+          {subtitle && (
+            <span className="font-mono-tech text-[9px] md:text-[10px] text-[var(--color-accent)] tracking-[0.2em] block mb-2 opacity-70">
+              {subtitle}
+            </span>
+          )}
+          {title && (
+            <h3 className="font-cinzel text-lg md:text-xl text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-500">
+              {title}
+            </h3>
+          )}
+        </div>
+      )}
 
       {/* Content */}
-      <div className="relative z-10 p-6 h-full flex flex-col">
-        {(title || subtitle) && (
-          <div className="mb-6">
-            {subtitle && (
-              <span className="block font-mono-tech text-[9px] text-[var(--color-accent)] tracking-widest uppercase mb-1">
-                {subtitle}
-              </span>
-            )}
-            {title && (
-              <h3 className="font-cinzel text-xl text-[var(--color-text-primary)]">
-                {title}
-              </h3>
-            )}
-          </div>
-        )}
-        <div className="flex-grow">{children}</div>
-      </div>
+      {children}
+
+      {/* Hover Glow Effect */}
+      <div className="absolute inset-0 bg-[var(--color-accent)]/0 group-hover:bg-[var(--color-accent)]/5 transition-all duration-500 pointer-events-none rounded-sm" />
     </motion.div>
   );
 };

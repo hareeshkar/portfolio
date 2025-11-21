@@ -361,6 +361,7 @@ export default function About() {
   const statRefs = useRef([]);
   const [showAnnotations, setShowAnnotations] = useState(false);
   const [spotlightPos, setSpotlightPos] = useState(null);
+  const borderLineRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -414,7 +415,6 @@ export default function About() {
     ],
     []
   );
-
   return (
     <section
       id="about"
@@ -528,7 +528,14 @@ export default function About() {
             </div>
 
             {/* RIGHT: Bio */}
-            <div className="lg:col-span-7 flex flex-col justify-center pl-0 lg:pl-8 border-l border-[var(--color-border]">
+            <div className="lg:col-span-7 flex flex-col justify-center pl-0 lg:pl-8 relative">
+              {/* Animated Border Line */}
+              <div
+                ref={borderLineRef}
+                className="hidden lg:block absolute left-0 top-0 w-[1px] h-full bg-gradient-to-b from-[var(--color-border)]/60 via-[var(--color-border)]/40 to-transparent"
+                style={{ transformOrigin: "top" }}
+              />
+
               <motion.div
                 className="space-y-12 py-8 px-4 lg:px-12"
                 variants={containerStagger}
@@ -595,39 +602,6 @@ export default function About() {
                     </span>
                     .
                   </AlchemyTextReveal>
-                </motion.div>
-
-                {/* Tech Stack Highlights */}
-                <motion.div
-                  variants={cinematicReveal}
-                  className="pt-6 border-t border-[var(--color-border)]/30"
-                >
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="flex flex-col">
-                      <span className="font-mono-tech text-[9px] text-[var(--color-accent)] uppercase tracking-widest mb-2 opacity-70">
-                        Backend
-                      </span>
-                      <span className="text-sm text-[var(--color-text-secondary)] font-light">
-                        Node.js, Python, ASP.NET
-                      </span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="font-mono-tech text-[9px] text-[var(--color-accent)] uppercase tracking-widest mb-2 opacity-70">
-                        Frontend
-                      </span>
-                      <span className="text-sm text-[var(--color-text-secondary)] font-light">
-                        React, GSAP, WebGL
-                      </span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="font-mono-tech text-[9px] text-[var(--color-accent)] uppercase tracking-widest mb-2 opacity-70">
-                        AI/ML
-                      </span>
-                      <span className="text-sm text-[var(--color-text-secondary)] font-light">
-                        OpenCV, LLMs, Vision
-                      </span>
-                    </div>
-                  </div>
                 </motion.div>
 
                 {/* CTA Button */}

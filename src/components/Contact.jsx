@@ -38,15 +38,19 @@ const AlchemyTextReveal = ({ children, className }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: isMobile ? 15 : 20 }}
+      initial={{ opacity: 0, y: isMobile ? 10 : 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-5%" }}
+      viewport={{ 
+        once: true, 
+        margin: isMobile ? "-10%" : "-5%",
+        amount: isMobile ? 0.3 : 0.5
+      }}
       transition={{
-        duration: isMobile ? 0.6 : 1.2,
+        duration: isMobile ? 0.5 : 1.2,
         ease: [0.22, 1, 0.36, 1],
       }}
       className={className}
-      style={{ willChange: "transform, opacity" }}
+      style={{ willChange: "auto" }}
     >
       {children}
     </motion.div>
@@ -62,7 +66,6 @@ const Contact = () => {
     offset: ["start end", "end start"],
   });
 
-  // Disable parallax on mobile for performance
   const y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, -50]);
 
   useEffect(() => {
