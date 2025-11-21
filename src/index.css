@@ -111,11 +111,28 @@
     overflow-x: hidden;
   }
 
+  /* Video optimization */
   video {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform, filter;
+  }
+
+  /* Prevent video flicker on load */
+  video::-webkit-media-controls {
+    display: none !important;
+  }
+
+  /* Smooth video transitions */
+  video.video-loading {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  video.video-ready {
+    opacity: 1;
+  }
 
   ::selection {
     background-color: var(--color-accent);

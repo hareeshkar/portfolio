@@ -3,10 +3,10 @@ import {
   motion,
   useScroll,
   useTransform,
-  useSpring,
   useInView as useFramerInView,
   animate,
 } from "framer-motion";
+// FIX: Import useInView from react-intersection-observer
 import { useInView } from "react-intersection-observer";
 import { useLenisScroll } from "../contexts/LenisContext";
 import gsap from "gsap";
@@ -15,10 +15,10 @@ import SplitType from "split-type";
 
 // --- EXISTING SUB-COMPONENTS ---
 import ArchitectCard from "./ArchitectCard";
-import { HoverBorderGradient } from "./HoverBorderGradient";
 import TextScramble from "./TextScramble";
 import Spotlight from "./Spotlight";
 import AnnotationLines from "./blueprint/AnnotationLines";
+import SmartVideo from "./SmartVideo";
 
 // --- 1. STYLE INJECTION ---
 const GlobalStyles = () => (
@@ -36,30 +36,26 @@ const GlobalStyles = () => (
   `}</style>
 );
 
-// --- 2. UTILITY: ANIMATED COUNTER (CountUp) ---
+// --- 2. UTILITY: ANIMATED COUNTER ---
 const AnimatedCounter = ({ value, suffix = "" }) => {
   const ref = useRef(null);
   const inView = useFramerInView(ref, { margin: "-10%" });
-
-  // Parse number from string (e.g. "15+" -> 15)
   const numericValue = parseInt(value.replace(/\D/g, "")) || 0;
   const isPlus = value.includes("+");
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
-
     if (inView) {
       const controls = animate(0, numericValue, {
         duration: 2,
-        ease: [0.22, 1, 0.36, 1], // Custom "Heavy" ease
+        ease: [0.22, 1, 0.36, 1],
         onUpdate: (v) => {
           node.textContent = Math.round(v) + (isPlus ? "+" : "") + suffix;
         },
       });
       return controls.stop;
     } else {
-      // Reset to 0 when out of view
       node.textContent = "0" + (isPlus ? "+" : "") + suffix;
     }
   }, [inView, numericValue, isPlus, suffix]);
@@ -72,11 +68,10 @@ const AnimatedCounter = ({ value, suffix = "" }) => {
 };
 
 // --- 3. COMPONENT: ALCHEMY TEXT REVEAL ---
-// Updated to support both word and character reveal (revealType prop)
 const AlchemyTextReveal = ({
   children,
   className,
-  revealType = "words", // "words" | "chars"
+  revealType = "words",
   start = "top 85%",
   end = "bottom 65%",
   scrub = 0.5,
@@ -88,16 +83,13 @@ const AlchemyTextReveal = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
-
     gsap.registerPlugin(ScrollTrigger);
     const split = new SplitType(containerRef.current, {
       types: revealType,
       tagName: "span",
       preserveWhitespace: true,
     });
-
     const targets = revealType === "chars" ? split.chars : split.words;
-
     if (!targets || targets.length === 0) return;
 
     gsap.fromTo(
@@ -117,7 +109,6 @@ const AlchemyTextReveal = ({
         },
       }
     );
-
     return () => {
       split && split.revert();
       ScrollTrigger.getAll().forEach((t) => {
@@ -140,167 +131,242 @@ const GoldHighlight = ({ children }) => (
   </span>
 );
 
-// --- 5. COMPONENT: INTERACTIVE VIDEO CARD ---
+// --- 5. COMPONENT: GOLD BRACKET ---
+const GoldBracket = ({ position = "top-left", isActive }) => {
+  const isTop = position.includes("top");
+  const isLeft = position.includes("left");
+
+  return (
+    <div
+      className={`absolute w-8 h-8 pointer-events-none z-30 transition-all duration-1000 ease-out
+        ${isTop ? "top-3" : "bottom-3"}
+        ${isLeft ? "left-3" : "right-3"}
+      `}
+      style={{
+        opacity: isActive ? 1 : 0.3,
+        transform: isActive ? "scale(1)" : "scale(0.9)",
+      }}
+    >
+      <div
+        className={`absolute h-[1.5px] bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent)] transition-all duration-1000 ${
+          isTop ? "top-0" : "bottom-0"
+        } ${isLeft ? "left-0" : "right-0"}`}
+        style={{ width: isActive ? "100%" : "0%" }}
+      />
+      <div
+        className={`absolute w-[1.5px] bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent)] transition-all duration-1000 ${
+          isTop ? "top-0" : "bottom-0"
+        } ${isLeft ? "left-0" : "right-0"}`}
+        style={{ height: isActive ? "100%" : "0%" }}
+      />
+    </div>
+  );
+};
+
+// --- 6. COMPONENT: INTERACTIVE VIDEO CARD (Fixed Gold Gas & Preload) ---
 const InteractiveVideoCard = ({ item, index }) => {
   const [isActive, setIsActive] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [isAutoLit, setIsAutoLit] = useState(false);
+
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Lazy load video only when near viewport
+  // 1. Intersection observer for loading trigger
   useEffect(() => {
     if (!containerRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setShouldLoad(true);
-          }
+          // Load when 200px away from viewport
+          if (entry.isIntersecting) setShouldLoad(true);
         });
       },
-      { rootMargin: "200px" } // Preload 200px before entering viewport
+      { rootMargin: "200px" }
     );
-
     observer.observe(containerRef.current);
 
     return () => observer.disconnect();
   }, []);
 
-  // Pause video when out of viewport to save resources
+  // 2. Auto-Highlight Logic
   useEffect(() => {
-    if (!videoRef.current || !shouldLoad) return;
+    if (!containerRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            videoRef.current?.play().catch(() => {});
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            setIsAutoLit(true);
           } else {
-            videoRef.current?.pause();
+            setIsAutoLit(false);
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: [0.4, 0.6], rootMargin: "-10% 0px" }
     );
 
     observer.observe(containerRef.current);
-
     return () => observer.disconnect();
-  }, [shouldLoad]);
+  }, []);
 
-  // Handle Mobile Tap
-  const handleTap = () => setIsActive(!isActive);
+  // 3. Playback Logic
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldLoad) return;
+
+    if (isActive || isAutoLit) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [isActive, isAutoLit, shouldLoad]);
+
+  const activeState = isActive || isAutoLit;
 
   return (
     <motion.div
       ref={containerRef}
-      className="group relative cursor-pointer overflow-hidden rounded-sm border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-colors duration-500"
-      initial={{ opacity: 0, y: 20 }}
+      className="group relative cursor-pointer overflow-hidden rounded-sm bg-[#050505] border border-[var(--color-border)] transition-colors duration-1000"
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.8 }}
-      onClick={handleTap}
+      transition={{
+        delay: index * 0.15,
+        duration: 1.2,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      onClick={() => setIsActive(!isActive)}
       style={{
-        contain: "layout style paint", // CSS containment for better performance
-        willChange: "auto", // Let browser optimize
+        borderColor: activeState
+          ? "var(--color-accent)"
+          : "rgba(255,255,255,0.05)",
+        willChange: "transform, border-color",
       }}
     >
-      {/* Container Aspect Ratio */}
-      <div className="aspect-[4/5] w-full relative bg-black">
-        {/* Video Layer - Only render when needed */}
+      <GoldBracket position="top-left" isActive={activeState} />
+      <GoldBracket position="bottom-right" isActive={activeState} />
+
+      {/* Live Indicator */}
+      <div
+        className={`absolute top-4 right-4 z-30 flex items-center gap-2 transition-opacity duration-700 ${
+          activeState ? "opacity-100" : "opacity-30"
+        }`}
+      >
+        <div
+          className={`w-1.5 h-1.5 rounded-full ${
+            activeState
+              ? "bg-red-500 shadow-[0_0_8px_red] animate-pulse"
+              : "bg-gray-600"
+          }`}
+        />
+        <span className="font-mono-tech text-[8px] tracking-widest text-[var(--color-text-secondary)]">
+          LOG_0{index + 1}
+        </span>
+      </div>
+
+      {/* Video Container */}
+      <div className="aspect-[4/5] w-full relative bg-black overflow-hidden">
         {shouldLoad ? (
-          <video
+          <SmartVideo
             ref={videoRef}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
-              isActive ? "grayscale-0 scale-105" : "grayscale-[0.8] scale-100"
-            } group-hover:grayscale-0 group-hover:scale-105`}
+            src={item.videoSrc}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              filter: activeState
+                ? "grayscale(25%) contrast(1.05) brightness(1) saturate(0.75)"
+                : "grayscale(100%) contrast(0.95) brightness(0.6) saturate(0.70)",
+              transform: "scale(1.01)",
+              transition: "filter 1.5s cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
             muted
             loop
             playsInline
-            preload="metadata" // Only load metadata initially
-            style={{
-              willChange: "transform, filter", // GPU optimization
-              transform: "translateZ(0)", // Force GPU acceleration
-            }}
-          >
-            <source src={item.videoSrc} type="video/mp4" />
-          </video>
+            preload="auto"
+          />
         ) : (
-          // Placeholder while loading
-          <div className="absolute inset-0 bg-gray-900 animate-pulse" />
+          <div className="absolute inset-0 bg-neutral-900" />
         )}
 
-        {/* Scanline Overlay (Aesthetic) */}
-        <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.25)_50%)] bg-[size:100%_4px] pointer-events-none opacity-20" />
+        {/* OFF GOLD GAS OVERLAY - The Moody Color Reveal */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(184, 134, 11, 0.25), rgba(184, 134, 11, 0.08) 50%, transparent 80%)",
+            mixBlendMode: "screen",
+            opacity: activeState ? 0.7 : 0,
+            transform: activeState ? "scale(1.3)" : "scale(0.9)",
+            transition:
+              "opacity 1.5s ease-in-out, transform 1.8s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        />
+
+        {/* Secondary Off Gold Accent Layer - Subtle Overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(161, 118, 14, 0.12) 0%, transparent 60%)",
+            mixBlendMode: "overlay",
+            opacity: activeState ? 0.4 : 0,
+            transition: "opacity 1.8s ease-in-out",
+          }}
+        />
+
+        {/* Film Grain */}
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.08] pointer-events-none mix-blend-overlay z-20" />
 
         {/* Gradient Scrim */}
         <div
-          className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-500 ${
-            isActive ? "opacity-100" : "opacity-80 group-hover:opacity-100"
-          }`}
+          className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-20 transition-opacity duration-1000"
+          style={{ opacity: activeState ? 0.7 : 0.6 }}
         />
 
-        {/* Content Layer */}
-        <div className="absolute bottom-0 left-0 w-full p-6 z-20 flex flex-col justify-end h-full">
-          {/* Title moves up on hover/active */}
+        {/* Content Layer - Smooth reveal on both desktop and mobile */}
+        <div className="absolute bottom-0 left-0 w-full p-8 z-30 flex flex-col justify-end h-full pointer-events-none">
           <div
-            className={`transform transition-transform duration-500 ${
-              isActive
-                ? "-translate-y-2"
-                : "translate-y-4 group-hover:-translate-y-2"
-            }`}
+            style={{
+              transform: activeState ? "translateY(0px)" : "translateY(60px)",
+              opacity: activeState ? 1 : 0,
+              transition:
+                "transform 800ms cubic-bezier(0.22, 1, 0.36, 1), opacity 800ms ease-out",
+            }}
           >
-            <h4 className="font-cinzel text-xl text-white mb-2 [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
+            <h4 className="font-cinzel text-2xl text-[#e0e0e0] mb-3 drop-shadow-md tracking-tight">
               {item.title}
             </h4>
 
-            {/* Description Reveal */}
             <div
-              className={`overflow-hidden transition-all duration-500 ${
-                isActive
-                  ? "max-h-40 opacity-100"
-                  : "max-h-0 opacity-0 group-hover:max-h-40 group-hover:opacity-100"
-              }`}
+              className="h-[1px] bg-[var(--color-accent)] mb-4"
+              style={{
+                width: activeState ? "100%" : "40px",
+                opacity: activeState ? 0.8 : 0.4,
+                transition: "width 1200ms ease-out, opacity 1200ms ease-out",
+              }}
+            />
+
+            <div
+              style={{
+                transform: activeState ? "translateY(0px)" : "translateY(20px)",
+                opacity: activeState ? 1 : 0,
+                transition:
+                  "transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 900ms ease-out",
+                transitionDelay: activeState ? "200ms" : "0ms",
+              }}
             >
-              <p className="font-mono-tech text-[10px] text-gray-300 leading-relaxed border-l-2 border-[var(--color-accent)] pl-3 mt-2">
+              <p className="font-mono-tech text-[11px] text-[#a0a0a0] leading-relaxed border-l border-[var(--color-accent)]/30 pl-3">
                 {item.desc}
               </p>
             </div>
           </div>
-
-          {/* Mobile Tap Hint */}
-          <div
-            className={`lg:hidden absolute top-4 right-4 transition-opacity duration-300 ${
-              isActive ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            <div className="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center border border-white/20 animate-pulse">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-            </div>
-          </div>
         </div>
-
-        {/* Active Border Glow */}
-        <div
-          className={`absolute inset-0 border-2 border-[var(--color-accent)] pointer-events-none transition-opacity duration-500 ${
-            isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-          }`}
-        />
       </div>
     </motion.div>
   );
 };
 
-// --- 6. UTILITY: TECH SEPARATOR ---
+// --- 7. UTILITY: TECH SEPARATOR ---
 const TechSeparator = () => (
   <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] z-10 pointer-events-none -translate-y-[99%]">
     <svg
@@ -317,7 +383,7 @@ const TechSeparator = () => (
   </div>
 );
 
-// --- 7. UTILITY: CIPHER TEXT ---
+// --- 8. UTILITY: CIPHER TEXT ---
 const CipherText = ({ text, className }) => {
   const CHARS = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ0123456789";
   const [display, setDisplay] = useState(text);
@@ -337,7 +403,7 @@ const CipherText = ({ text, className }) => {
       );
       if (iter >= text.length) clearInterval(interval);
       iter += 1 / 3;
-    }, 20); // Reduced from 30ms to 20ms for faster animation
+    }, 20);
     return () => clearInterval(interval);
   }, [text, inView]);
   return (
@@ -350,13 +416,12 @@ const CipherText = ({ text, className }) => {
   );
 };
 
-// --- 8. MAIN COMPONENT ---
+// --- 9. MAIN COMPONENT ---
 export default function About() {
   const scrollTo = useLenisScroll();
   const sectionRef = useRef(null);
   const [ref, inView] = useInView({ threshold: 0.1 });
 
-  // Refs
   const architectCardRef = useRef(null);
   const statRefs = useRef([]);
   const [showAnnotations, setShowAnnotations] = useState(false);
@@ -369,20 +434,24 @@ export default function About() {
   });
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 100]);
 
-  // --- ANIMATION VARIANTS ---
+  // Cinematic Variants
   const cinematicReveal = {
-    hidden: { opacity: 0, y: 80, scale: 0.96, filter: "blur(15px)" },
+    hidden: { opacity: 0, y: 60, filter: "blur(10px)" },
     visible: {
       opacity: 1,
       y: 0,
-      scale: 1,
       filter: "blur(0px)",
       transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] },
     },
   };
 
   const containerStagger = {
-    visible: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
+    visible: {
+      transition: {
+        staggerChildren: 0.18, // Increased from 0.15 for more dramatic stagger
+        delayChildren: 0.2,
+      },
+    },
   };
 
   // Data
@@ -684,7 +753,17 @@ export default function About() {
 
             <motion.div
               className="grid grid-cols-1 md:grid-cols-3 gap-8"
-              variants={containerStagger}
+              variants={{
+                visible: {
+                  transition: {
+                    staggerChildren: 0.35, // Increased from 0.25 for more dramatic effect
+                    delayChildren: 0.1,
+                  },
+                },
+              }}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ margin: "-10%", once: true }}
             >
               {expertise.map((item, idx) => (
                 <motion.div key={idx} variants={cinematicReveal}>

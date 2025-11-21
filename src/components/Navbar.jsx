@@ -53,6 +53,10 @@ export default function Navbar() {
         <div className="flex justify-between items-center max-w-7xl mx-auto">
           <a
             href="#home"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollTo("#home", { offset: -80 });
+            }}
             className="font-display text-2xl font-bold tracking-wide"
           >
             RH.
@@ -61,14 +65,14 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {links.map((link) => (
-              <TextScramble
+              <a
                 key={link.title}
-                as="a"
                 href={link.href}
-                text={link.title}
-                className="text-sm uppercase tracking-widest"
                 onClick={(e) => handleNavClick(e, link.href)}
-              />
+                className="text-sm uppercase tracking-widest"
+              >
+                <TextScramble text={link.title} />
+              </a>
             ))}
             <button
               onClick={toggleTheme}

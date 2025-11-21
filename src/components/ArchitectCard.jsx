@@ -4,6 +4,50 @@ import "./ArchitectCard.css";
 import { useLenisScroll } from "../contexts/LenisContext";
 import TextScramble from "./TextScramble";
 
+// --- CORNER ACCENT COMPONENT ---
+// Renders the high-end L-brackets with a "drawn" animation effect
+const TechBracket = ({ position = "top-left", delay = 0 }) => {
+  const isTop = position.includes("top");
+  const isLeft = position.includes("left");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.2, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={`absolute w-12 h-12 pointer-events-none z-20 mix-blend-screen
+        ${isTop ? "-top-3" : "-bottom-3"}
+        ${isLeft ? "-left-3" : "-right-3"}
+      `}
+    >
+      {/* The Horizontal Line */}
+      <div
+        className={`absolute h-[2px] bg-[var(--color-accent)] shadow-[0_0_10px_var(--color-accent)]
+          ${isTop ? "top-0" : "bottom-0"}
+          ${isLeft ? "left-0" : "right-0"}
+        `}
+        style={{ width: "100%" }}
+      />
+      {/* The Vertical Line */}
+      <div
+        className={`absolute w-[2px] bg-[var(--color-accent)] shadow-[0_0_10px_var(--color-accent)]
+          ${isTop ? "top-0" : "bottom-0"}
+          ${isLeft ? "left-0" : "right-0"}
+        `}
+        style={{ height: "100%" }}
+      />
+      
+      {/* Decorative Vertex Block (The "Join") */}
+      <div
+        className={`absolute w-1.5 h-1.5 bg-[var(--color-text-primary)] border border-[var(--color-accent)]
+          ${isTop ? "-top-0.5" : "-bottom-0.5"}
+          ${isLeft ? "-left-0.5" : "-right-0.5"}
+        `}
+      />
+    </motion.div>
+  );
+};
+
 const ArchitectCard = ({
   name = "JOHN DOE",
   title = "SYSTEM ARCHITECT",
@@ -12,24 +56,23 @@ const ArchitectCard = ({
 }) => {
   const sceneRef = useRef(null);
   const cardRef = useRef(null);
-  const btnRef = useRef(null);
   const rafId = useRef(null);
   const scrollTo = useLenisScroll();
 
-  // Smooth Damping Variables
-  const damping = 0.08;
+  // --- PHYSICS ENGINE V2 ---
+  // Smoother damping for a "heavy luxury" feel
+  const damping = 0.06; // Lower value = heavier, smoother inertia
   const currentMouse = useRef({ x: 0, y: 0 });
   const targetMouse = useRef({ x: 0, y: 0 });
 
-  // Mobile touch state
-  const [isMobileActive, setIsMobileActive] = useState(false);
+  // Mobile Logic
   const [isMobile, setIsMobile] = useState(false);
+  const [isMobileActive, setIsMobileActive] = useState(false);
   const touchStartY = useRef(0);
   const touchEndY = useRef(0);
 
-  // --- PHYSICS ENGINE (Heavy, Architectural Rotation) ---
-  // Reference: Smaller rotation values (10deg max vs 15deg) for "architectural" solidity
   const animate = useCallback(() => {
+    // Linear interpolation for smooth follow
     const lx =
       currentMouse.current.x +
       (targetMouse.current.x - currentMouse.current.x) * damping;
@@ -40,46 +83,37 @@ const ArchitectCard = ({
     currentMouse.current = { x: lx, y: ly };
 
     if (cardRef.current) {
-      // Lighter rotation for "architectural" feel
-      const rotateX = (ly * -10).toFixed(3); // Max 10deg (was 15deg)
-      const rotateY = (lx * 10).toFixed(3); // Max 10deg (was 15deg)
+      // Constrained rotation range for stability
+      const rotateX = (ly * -8).toFixed(3); // Tilt Max 8deg
+      const rotateY = (lx * 8).toFixed(3);  // Pan Max 8deg
 
-      // Set CSS Variables for GPU handling
       cardRef.current.style.setProperty("--rotate-x", `${rotateX}deg`);
       cardRef.current.style.setProperty("--rotate-y", `${rotateY}deg`);
 
-      // Pass pointer values for shimmer and parallax effects
-      const pointerXPercent = (targetMouse.current.x + 0.5) * 100;
-      const pointerYPercent = (targetMouse.current.y + 0.5) * 100;
+      // Dynamic Lighting Calculations
+      const pointerXPercent = (lx + 0.5) * 100;
+      const pointerYPercent = (ly + 0.5) * 100;
 
       cardRef.current.style.setProperty("--pointer-x", `${pointerXPercent}%`);
       cardRef.current.style.setProperty("--pointer-y", `${pointerYPercent}%`);
 
-      // Parallax offsets for different layers
-      const parallaxFast = (targetMouse.current.x * 30).toFixed(2);
-      const parallaxSlow = (targetMouse.current.x * 15).toFixed(2);
+      // Parallax Depth Calculations
+      const parallaxFast = (lx * 40).toFixed(2);
+      const parallaxSlow = (lx * 20).toFixed(2);
 
       cardRef.current.style.setProperty("--parallax-fast", `${parallaxFast}px`);
       cardRef.current.style.setProperty("--parallax-slow", `${parallaxSlow}px`);
-
-      // Glow intensity based on distance from center
-      const fromCenter = Math.sqrt(
-        Math.pow(targetMouse.current.x, 2) + Math.pow(targetMouse.current.y, 2)
-      );
-      const glowIntensity = Math.min(fromCenter * 1.5, 1).toFixed(3);
-      cardRef.current.style.setProperty("--glow-intensity", glowIntensity);
     }
 
     rafId.current = requestAnimationFrame(animate);
   }, []);
 
   useEffect(() => {
-    // Start Loop
     rafId.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId.current);
   }, [animate]);
 
-  // Detect mobile device
+  // Device Detection
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
@@ -89,56 +123,40 @@ const ArchitectCard = ({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Handle touch events for mobile diorama effect
-  const handleTouchStart = useCallback(
-    (e) => {
-      if (!isMobile) return;
-      touchStartY.current = e.touches[0].clientY;
-      setIsMobileActive(true);
-    },
-    [isMobile]
-  );
+  // --- TOUCH HANDLERS (Mobile Diorama Mode) ---
+  const handleTouchStart = useCallback((e) => {
+    if (!isMobile) return;
+    touchStartY.current = e.touches[0].clientY;
+    setIsMobileActive(true);
+  }, [isMobile]);
 
-  const handleTouchMove = useCallback(
-    (e) => {
-      if (!isMobile) return;
-      touchEndY.current = e.touches[0].clientY;
-    },
-    [isMobile]
-  );
+  const handleTouchMove = useCallback((e) => {
+    if (!isMobile) return;
+    touchEndY.current = e.touches[0].clientY;
+  }, [isMobile]);
 
   const handleTouchEnd = useCallback(() => {
     if (!isMobile) return;
-
     const swipeDistance = touchStartY.current - touchEndY.current;
-    const minSwipeDistance = 30; // Minimum pixels to consider a swipe
-
-    // If swiped up/down significantly, return to normal and allow scroll
-    if (Math.abs(swipeDistance) > minSwipeDistance) {
+    
+    // Dismiss if swiping, toggle if tapping
+    if (Math.abs(swipeDistance) > 30) {
       setIsMobileActive(false);
-
-      // Add returning class for smooth transition
       if (cardRef.current) {
         cardRef.current.classList.add("mobile-returning");
         setTimeout(() => {
-          if (cardRef.current) {
-            cardRef.current.classList.remove("mobile-returning");
-          }
+          cardRef.current?.classList.remove("mobile-returning");
         }, 800);
       }
     } else {
-      // Just a tap, toggle the state
       setIsMobileActive((prev) => !prev);
     }
-
     touchStartY.current = 0;
     touchEndY.current = 0;
   }, [isMobile]);
 
-  // Apply mobile active class
   useEffect(() => {
     if (!cardRef.current || !isMobile) return;
-
     if (isMobileActive) {
       cardRef.current.classList.add("mobile-active");
     } else {
@@ -146,33 +164,22 @@ const ArchitectCard = ({
     }
   }, [isMobileActive, isMobile]);
 
-  const handleMouseMove = useCallback(
-    (e) => {
-      if (isMobile) return; // Disable on mobile
-      if (!cardRef.current) return;
-
-      const rect = cardRef.current.getBoundingClientRect();
-      // Normalize range to -0.5 to 0.5 (centered)
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-
-      targetMouse.current = { x, y };
-    },
-    [isMobile]
-  );
+  // --- MOUSE HANDLERS (Desktop Parallax) ---
+  const handleMouseMove = useCallback((e) => {
+    if (isMobile || !cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    // Normalize coordinate space (-0.5 to 0.5)
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    targetMouse.current = { x, y };
+  }, [isMobile]);
 
   const handleMouseLeave = () => {
-    targetMouse.current = { x: 0, y: 0 }; // Snap back to center
+    targetMouse.current = { x: 0, y: 0 };
   };
 
-  // Name split for styling
   const [firstName, ...lastNameArr] = name.split(" ");
   const lastName = lastNameArr.join(" ");
-
-  const handleConnectClick = (e) => {
-    e.preventDefault();
-    scrollTo("#contact", { offset: -80 });
-  };
 
   return (
     <div
@@ -185,10 +192,10 @@ const ArchitectCard = ({
       onMouseLeave={handleMouseLeave}
     >
       <div className="architect-composition" ref={cardRef}>
-        {/* LAYER 0: Ambient Glow */}
+        {/* LAYER 0: Ambient Atmosphere */}
         <div className="architect-glow" />
 
-        {/* LAYER 1: Grid Structure */}
+        {/* LAYER 1: Grid Structure (Background Technicals) */}
         <div className="architect-grid-layer">
           <div className="grid-line v1"></div>
           <div className="grid-line v2"></div>
@@ -196,18 +203,34 @@ const ArchitectCard = ({
           <div className="decorative-ref">001</div>
         </div>
 
-        {/* LAYER 2: Image Artifact */}
+        {/* LAYER 2: The Identity Plane (Image + HUD Borders) */}
         <div className="architect-image-plane">
+          
+          {/* --- NEW: LUXURY L-BRACKETS --- */}
+          {/* Top-Left Gold Bracket */}
+          <TechBracket position="top-left" delay={0.2} />
+          
+          {/* Bottom-Right Gold Bracket */}
+          <TechBracket position="bottom-right" delay={0.4} />
+
+          {/* Additional 'REC' indicator for feed aesthetic */}
+          <div className="absolute top-3 right-3 z-30 flex items-center gap-2 pointer-events-none">
+            <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]"></span>
+            <span className="font-mono-tech text-[8px] tracking-widest text-[var(--color-text-primary)] opacity-80">LIVE_FEED</span>
+          </div>
+
           <div className="image-wrapper">
             <div className="image-noise"></div>
             <img src={avatarUrl} alt={name} decoding="async" loading="lazy" />
           </div>
-          <div className="image-border-accent"></div>
+          
+          {/* Original accent border kept as a subtle inner frame */}
+          <div className="image-border-accent opacity-40"></div>
         </div>
 
-        {/* LAYER 3: Glass Interface (Enhanced with Parallax) */}
+        {/* LAYER 3: Glass Interface (Information HUD) */}
         <div className="architect-glass-panel">
-          {/* Dynamic Shimmer Overlay */}
+          {/* Dynamic Shimmer */}
           <div className="glass-shimmer"></div>
 
           <div className="architect-identity">
@@ -218,7 +241,7 @@ const ArchitectCard = ({
                 style={{ marginBottom: "4px", marginTop: "2px" }}
               >
                 {lastName}
-                {/* Gold underline near RAVI */}
+                {/* Dynamic underline */}
                 <motion.div
                   className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-[var(--color-accent)] to-transparent"
                   initial={{ width: 0 }}
@@ -241,12 +264,10 @@ const ArchitectCard = ({
             <div className="meta-item">
               <span className="meta-label">SYS_STATUS</span>
               <span className="meta-value text-[#10b981] flex items-center gap-2">
-                {/* Glowing dot with theme-aware color */}
                 <span
-                  className="w-1.5 h-1.5 rounded-full bg-[var(--color-text-primary)] animate-pulse shadow-lg"
+                  className="w-1.5 h-1.5 rounded-full bg-[var(--color-text-primary)] animate-pulse"
                   style={{
-                    boxShadow:
-                      "0 0 8px var(--color-text-primary), 0 0 16px var(--color-text-primary)",
+                    boxShadow: "0 0 8px var(--color-text-primary), 0 0 16px var(--color-text-primary)",
                   }}
                 />
                 ONLINE
@@ -254,14 +275,18 @@ const ArchitectCard = ({
             </div>
           </div>
 
-          {/* Interactive Button - With TextScramble */}
+          {/* Interactive Connect Button */}
           <button
-            className="group relative px-6 py-3 bg-transparent border border-[var(--color-accent)]/40 text-[var(--color-accent)] font-mono-tech text-xs tracking-[0.2em] overflow-hidden transition-all hover:border-[var(--color-accent)]"
-            ref={btnRef}
-            onClick={handleConnectClick}
+            className="group relative px-6 py-3 bg-transparent border border-[var(--color-accent)]/40 text-[var(--color-accent)] font-mono-tech text-xs tracking-[0.2em] overflow-hidden transition-all hover:border-[var(--color-accent)] hover:shadow-[0_0_20px_var(--color-accent-glow)]"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollTo("#contact", { offset: -80 });
+            }}
           >
+            {/* Button Sweep Effect */}
             <span className="absolute inset-0 w-0 bg-[var(--color-accent)] transition-all duration-[0.4s] ease-out group-hover:w-full opacity-10"></span>
-            <span className="relative flex items-center gap-2">
+            
+            <span className="relative flex items-center gap-2 justify-center">
               <TextScramble
                 text="CONNECT_NOW"
                 className="text-xs"
@@ -276,7 +301,7 @@ const ArchitectCard = ({
           </button>
         </div>
 
-        {/* LAYER 4: Floating Decoration */}
+        {/* LAYER 4: Floating Decor Elements */}
         <div className="floating-el sq"></div>
       </div>
     </div>

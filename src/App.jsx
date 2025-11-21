@@ -25,6 +25,7 @@ import VideoPreloader from "./components/VideoPreloader";
 function App() {
   return (
     <>
+      {/* Preload videos in background */}
       <VideoPreloader />
       <ParticleController />
 
