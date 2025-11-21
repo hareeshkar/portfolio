@@ -44,7 +44,6 @@ export default function ParticleController() {
   const activeConfigRef = useRef(null);
   const pendingConfigRef = useRef(null);
   const isTransitioningRef = useRef(false);
-  const swapTimeoutRef = useRef(null);
   const settleTimeoutRef = useRef(null);
   const activeThemeRef = useRef(theme);
   const latestThemeRef = useRef(theme);
@@ -64,18 +63,42 @@ export default function ParticleController() {
   }, [presets]);
 
   const clearTimers = useCallback(() => {
-    if (swapTimeoutRef.current) {
-      clearTimeout(swapTimeoutRef.current);
-      swapTimeoutRef.current = null;
-    }
     if (settleTimeoutRef.current) {
       clearTimeout(settleTimeoutRef.current);
       settleTimeoutRef.current = null;
     }
   }, []);
 
-  const SWAP_DELAY = 220;
   const FADE_DURATION = 1800;
+
+  const handleParticlesLoaded = useCallback((container) => {
+    // When the new particles are loaded, we trigger the swap
+    const targetInstance = container.id === "tsparticles-instanceA" ? "A" : "B";
+
+    // Only swap if we are actually waiting for this instance to become active
+    // and it's not already the active one (prevent double swaps)
+    if (
+      isTransitioningRef.current &&
+      activeInstanceRef.current !== targetInstance
+    ) {
+      setActiveInstance(targetInstance);
+      activeInstanceRef.current = targetInstance;
+
+      // Start the settle timer
+      if (settleTimeoutRef.current) clearTimeout(settleTimeoutRef.current);
+      settleTimeoutRef.current = setTimeout(() => {
+        isTransitioningRef.current = false;
+        if (
+          pendingConfigRef.current &&
+          pendingConfigRef.current !== activeConfigRef.current
+        ) {
+          const queued = pendingConfigRef.current;
+          pendingConfigRef.current = null;
+          startTransition(queued);
+        }
+      }, FADE_DURATION);
+    }
+  }, []);
 
   const startTransition = useCallback(
     (configKeyToLoad) => {
@@ -101,37 +124,19 @@ export default function ParticleController() {
       pendingConfigRef.current = null;
       clearTimers();
 
+      // Prepare the NEXT instance (inactive one) with new options
+      // The swap will happen in handleParticlesLoaded
       if (activeInstanceRef.current === "A") {
         setOptionsB(nextOptions);
         setKeyB(`B-key-${configCounter.current}`);
-        swapTimeoutRef.current = setTimeout(() => {
-          setActiveInstance("B");
-          activeInstanceRef.current = "B";
-          activeConfigRef.current = configKeyToLoad;
-          activeThemeRef.current = themeForTransition;
-        }, SWAP_DELAY);
+        activeConfigRef.current = configKeyToLoad;
+        activeThemeRef.current = themeForTransition;
       } else {
         setOptionsA(nextOptions);
         setKeyA(`A-key-${configCounter.current}`);
-        swapTimeoutRef.current = setTimeout(() => {
-          setActiveInstance("A");
-          activeInstanceRef.current = "A";
-          activeConfigRef.current = configKeyToLoad;
-          activeThemeRef.current = themeForTransition;
-        }, SWAP_DELAY);
+        activeConfigRef.current = configKeyToLoad;
+        activeThemeRef.current = themeForTransition;
       }
-
-      settleTimeoutRef.current = setTimeout(() => {
-        isTransitioningRef.current = false;
-        if (
-          pendingConfigRef.current &&
-          pendingConfigRef.current !== activeConfigRef.current
-        ) {
-          const queued = pendingConfigRef.current;
-          pendingConfigRef.current = null;
-          startTransition(queued);
-        }
-      }, SWAP_DELAY + FADE_DURATION);
     },
     [clearTimers]
   );
@@ -143,7 +148,6 @@ export default function ParticleController() {
     if (!themeChanged && activeConfigRef.current === currentConfigKey) {
       return;
     }
-
 
     if (isTransitioningRef.current) {
       pendingConfigRef.current = currentConfigKey;
@@ -186,6 +190,7 @@ export default function ParticleController() {
               key={keyA}
               id="tsparticles-instanceA"
               options={optionsA}
+              particlesLoaded={handleParticlesLoaded}
             />
           </div>
         )}
@@ -196,6 +201,7 @@ export default function ParticleController() {
               key={keyB}
               id="tsparticles-instanceB"
               options={optionsB}
+              particlesLoaded={handleParticlesLoaded}
             />
           </div>
         )}

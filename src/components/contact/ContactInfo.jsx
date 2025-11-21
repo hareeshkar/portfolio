@@ -3,25 +3,32 @@ import { motion } from "framer-motion";
 import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
 import { HiEnvelope } from "react-icons/hi2";
 
-// Optimized variants for coordinated animation
+// --- THE "SOLID STATE" VARIANTS ---
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.1,
-      when: "beforeChildren",
+      delayChildren: 0.05,
     },
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 15 },
+const techRevealVariant = {
+  hidden: { 
+    opacity: 0, 
+    scale: 0.96, // Starts slightly smaller (zoomed out)
+    y: 0, // FORCE ZERO MOVEMENT
+    x: 0, // FORCE ZERO MOVEMENT
+  },
   visible: {
     opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    scale: 1, // Locks into place
+    transition: { 
+      duration: 0.6, 
+      ease: [0.25, 1, 0.5, 1], // "Quart Out" - fast start, rock solid stop
+    },
   },
 };
 
@@ -30,35 +37,49 @@ const SocialLink = ({ href, icon: Icon, label }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    variants={itemVariants}
-    className="group flex items-center gap-4 p-4 border border-[var(--color-border)] hover:border-[var(--color-accent)] bg-[var(--color-surface)]/30 backdrop-blur-sm transition-all duration-300 active:scale-[0.98]"
+    variants={techRevealVariant}
+    // REMOVED "transition-all" to prevent CSS fighting the Entrance Animation
+    // Only animating colors/borders on hover now
+    className="group relative flex items-center gap-4 p-4 border border-[var(--color-border)] bg-[var(--color-surface)]/20 backdrop-blur-md overflow-hidden hover:border-[var(--color-accent)]/50 active:scale-[0.99] transition-colors duration-300 ease-out"
+    // "opacity" and "transform" are the only cheap things to animate on mobile
+    style={{ willChange: "opacity, transform" }}
   >
-    <div className="p-2 bg-[var(--color-background)] rounded-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
-      <Icon size={20} />
+    {/* Hover Background Sweep */}
+    <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out" />
+
+    {/* Icon Box */}
+    <div className="relative z-10 p-2 bg-[var(--color-background)]/80 rounded-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors duration-300 border border-[var(--color-border)] group-hover:border-[var(--color-accent)]/30">
+      <Icon size={18} />
     </div>
-    <div className="flex flex-col">
-      <span className="font-mono-tech text-[10px] text-[var(--color-text-secondary)] uppercase tracking-widest">
+
+    {/* Text Content */}
+    <div className="relative z-10 flex flex-col">
+      <span className="font-mono-tech text-[9px] text-[var(--color-text-secondary)] uppercase tracking-[0.15em] opacity-70 group-hover:opacity-100 transition-opacity duration-300">
         {label}
       </span>
-      <span className="font-cinzel text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
+      <span className="font-cinzel text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-300">
         Connect
       </span>
     </div>
-    <div className="ml-auto opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-[var(--color-accent)] hidden sm:block">
-      →
-    </div>
+
+    {/* Subtle Corner Accents (Visible on Hover) */}
+    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
   </motion.a>
 );
 
 const ContactInfo = () => {
   return (
     <motion.div
-      className="space-y-6"
+      className="space-y-6 w-full"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-10% 0px" }}
+      // CRITICAL: margin decreased to -5% to ensure it triggers easily on mobile
+      // once: true prevents any re-animation/refreshing when scrolling back
+      viewport={{ once: true, margin: "-5% 0px" }}
       variants={containerVariants}
     >
+      {/* The Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SocialLink
           href="mailto:hello@example.com"
@@ -75,29 +96,30 @@ const ContactInfo = () => {
           icon={SiLinkedin}
           label="Professional Net"
         />
-        <SocialLink
-          href="https://x.com"
-          icon={SiX}
-          label="Broadcast Feed"
+        <SocialLink 
+          href="https://x.com" 
+          icon={SiX} 
+          label="Broadcast Feed" 
         />
       </div>
 
-      {/* Location Data */}
-      <motion.div
-        variants={itemVariants}
+      {/* Location Data - Matches the reveal style */}
+      <motion.div 
+        variants={techRevealVariant}
         className="mt-12 pt-8 border-t border-[var(--color-border)] flex justify-between items-end"
       >
         <div className="flex flex-col gap-2">
-          <span className="font-mono-tech text-[10px] text-[var(--color-accent)] tracking-widest">
+          <span className="font-mono-tech text-[10px] text-[var(--color-accent)] tracking-[0.2em] flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse" />
             CURRENT_COORDINATES
           </span>
           <span className="font-cinzel text-lg text-[var(--color-text-primary)]">
             Cardiff, United Kingdom
           </span>
         </div>
-        <div className="text-right">
-          <span className="font-mono-tech text-[10px] text-[var(--color-text-secondary)]">
-            51.4816° N, 3.1791° W
+        <div className="text-right opacity-60">
+          <span className="font-mono-tech text-[9px] text-[var(--color-text-secondary)]">
+            51.4816° N <br /> 3.1791° W
           </span>
         </div>
       </motion.div>
