@@ -12,7 +12,7 @@ const About = React.lazy(() => import("./components/About"));
 const Projects = React.lazy(() => import("./components/Projects"));
 const Skills = React.lazy(() => import("./components/Skills"));
 const Contact = React.lazy(() =>
-  import("./components/contact").catch(() => {
+  import("./components/contact.jsx").catch(() => {
     // Fallback: if chunk fails to load, return a minimal component
     return {
       default: () => (

@@ -7,7 +7,14 @@ const projectsData = [
     title: "Synapse Med — AI Clinical Intelligence Engine",
     description:
       "MERN SPA converting medical lectures into interactive knowledge graphs. Orchestrates a 'Socratic Tutor' using Gemini to parse documents and produce visual flowcharts and quizzes.",
-    techStack: ["MongoDB", "Express", "React", "Node.js", "Gemini AI", "Three.js"],
+    techStack: [
+      "MongoDB",
+      "Express",
+      "React",
+      "Node.js",
+      "Gemini AI",
+      "Three.js",
+    ],
     liveLink: "#",
     githubLink: "https://github.com/hareeshkar/synapse-med",
     image:

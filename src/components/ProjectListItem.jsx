@@ -49,8 +49,8 @@ const ProjectListItem = ({
         */}
         {(() => {
           const repo =
-            project.githubLink && project.githubLink !== "#" 
-              ? project.githubLink 
+            project.githubLink && project.githubLink !== "#"
+              ? project.githubLink
               : "https://github.com/hareeshkar";
           return (
             <a
