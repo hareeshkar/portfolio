@@ -25,10 +25,10 @@ const Contact = React.lazy(() =>
               Please refresh the page or contact directly:
             </p>
             <a
-              href="mailto:hello@example.com"
+              href="mailto:hareeshkarravi@gmail.com"
               className="text-accent hover:underline"
             >
-              hello@example.com
+              hareeshkarravi@gmail.com
             </a>
           </div>
         </div>
