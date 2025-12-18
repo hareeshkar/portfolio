@@ -63,40 +63,48 @@ const CornerMarkers = () => {
   };
 
   return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-60">
+    <div className="absolute inset-0 pointer-events-none z-0 opacity-60">
       {/* Top Left */}
-      <motion.path
-        d="M1 12 V1 H12"
-        fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth="1"
-        variants={lineVariant}
-      />
+      <svg className="absolute top-0 left-0 w-4 h-4" viewBox="0 0 16 16">
+        <motion.path
+          d="M1 12 V1 H12"
+          fill="none"
+          stroke="var(--color-accent)"
+          strokeWidth="1.5"
+          variants={lineVariant}
+        />
+      </svg>
       {/* Top Right */}
-      <motion.path
-        d="Mcalc(100% - 12px) 1 Hcalc(100% - 1px) V12"
-        fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth="1"
-        variants={lineVariant}
-      />
+      <svg className="absolute top-0 right-0 w-4 h-4" viewBox="0 0 16 16">
+        <motion.path
+          d="M4 1 H15 V12"
+          fill="none"
+          stroke="var(--color-accent)"
+          strokeWidth="1.5"
+          variants={lineVariant}
+        />
+      </svg>
       {/* Bottom Left */}
-      <motion.path
-        d="M1 calc(100% - 12px) Vcalc(100% - 1px) H12"
-        fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth="1"
-        variants={lineVariant}
-      />
+      <svg className="absolute bottom-0 left-0 w-4 h-4" viewBox="0 0 16 16">
+        <motion.path
+          d="M1 4 V15 H12"
+          fill="none"
+          stroke="var(--color-accent)"
+          strokeWidth="1.5"
+          variants={lineVariant}
+        />
+      </svg>
       {/* Bottom Right */}
-      <motion.path
-        d="Mcalc(100% - 12px) calc(100% - 1px) Hcalc(100% - 1px) Vcalc(100% - 12px)"
-        fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth="1"
-        variants={lineVariant}
-      />
-    </svg>
+      <svg className="absolute bottom-0 right-0 w-4 h-4" viewBox="0 0 16 16">
+        <motion.path
+          d="M4 15 H15 V4"
+          fill="none"
+          stroke="var(--color-accent)"
+          strokeWidth="1.5"
+          variants={lineVariant}
+        />
+      </svg>
+    </div>
   );
 };
 

@@ -16,8 +16,8 @@ const containerVariants = {
 };
 
 const techRevealVariant = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     scale: 0.96, // Starts slightly smaller (zoomed out)
     y: 0, // FORCE ZERO MOVEMENT
     x: 0, // FORCE ZERO MOVEMENT
@@ -25,8 +25,8 @@ const techRevealVariant = {
   visible: {
     opacity: 1,
     scale: 1, // Locks into place
-    transition: { 
-      duration: 0.6, 
+    transition: {
+      duration: 0.6,
       ease: [0.25, 1, 0.5, 1], // "Quart Out" - fast start, rock solid stop
     },
   },
@@ -82,29 +82,29 @@ const ContactInfo = () => {
       {/* The Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SocialLink
-          href="mailto:hello@example.com"
+          href="mailto:hareeshkarravi@gmail.com"
           icon={HiEnvelope}
           label="Email Protocol"
         />
         <SocialLink
-          href="https://github.com"
+          href="https://github.com/hareeshkar"
           icon={SiGithub}
           label="Code Repository"
         />
         <SocialLink
-          href="https://linkedin.com"
+          href="https://www.linkedin.com/in/hareeshkar-ravi"
           icon={SiLinkedin}
           label="Professional Net"
         />
-        <SocialLink 
-          href="https://x.com" 
-          icon={SiX} 
-          label="Broadcast Feed" 
+        <SocialLink
+          href="https://x.com/hareeshkar"
+          icon={SiX}
+          label="Broadcast Feed"
         />
       </div>
 
       {/* Location Data - Matches the reveal style */}
-      <motion.div 
+      <motion.div
         variants={techRevealVariant}
         className="mt-12 pt-8 border-t border-[var(--color-border)] flex justify-between items-end"
       >
