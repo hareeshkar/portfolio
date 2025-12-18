@@ -90,7 +90,7 @@ const CipherRotator = ({ words, duration = 3500 }) => {
 };
 
 // --- ANIMATION CONSTANTS ---
-const EASE_LUXURY = [0.22, 1, 0.36, 1]; // Heavy friction
+const EASE_OUT_EXPO = [0.22, 1, 0.36, 1];
 const ANIM_DURATION = 1.4;
 
 // Variant: Masked Text Reveal (The "Monolith" Rise)
@@ -98,7 +98,7 @@ const revealVariant = {
   hidden: { y: "110%" },
   visible: {
     y: "0%",
-    transition: { duration: ANIM_DURATION, ease: EASE_LUXURY },
+    transition: { duration: ANIM_DURATION, ease: EASE_OUT_EXPO },
   },
 };
 
@@ -153,7 +153,7 @@ export default function Hero() {
   const { scrollY } = useScroll();
   const prefersReducedMotion = useReducedMotion();
 
-  // Cinematic Scroll Physics
+  // Scroll-based parallax
   const yVal = useTransform(scrollY, [0, 800], [0, 250]);
   const opacityVal = useTransform(scrollY, [0, 600], [1, 0]);
   const blurVal = useTransform(scrollY, [0, 600], ["0px", "15px"]);
@@ -177,14 +177,14 @@ export default function Hero() {
       <motion.div
         initial={{ scaleY: 0, originY: 0 }}
         animate={{ scaleY: 1 }}
-        transition={{ duration: 1.5, delay: 0.3, ease: EASE_LUXURY }}
+        transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT_EXPO }}
         className="absolute left-8 top-0 bottom-0 w-px bg-[var(--color-accent)]/10 hidden lg:block"
       />
       {/* Right: Draws Up */}
       <motion.div
         initial={{ scaleY: 0, originY: 1 }}
         animate={{ scaleY: 1 }}
-        transition={{ duration: 1.5, delay: 0.5, ease: EASE_LUXURY }}
+        transition={{ duration: 1.5, delay: 0.5, ease: EASE_OUT_EXPO }}
         className="absolute right-8 top-0 bottom-0 w-px bg-[var(--color-accent)]/10 hidden lg:block"
       />
 
@@ -249,7 +249,7 @@ export default function Hero() {
           <motion.div
             initial={{ x: "-100%" }}
             animate={{ x: "0%" }}
-            transition={{ duration: 1.2, delay: 0.5, ease: EASE_LUXURY }}
+            transition={{ duration: 1.2, delay: 0.5, ease: EASE_OUT_EXPO }}
             className="flex items-center gap-4"
           >
             <div className="h-[1px] w-16 bg-[var(--color-accent)]" />
@@ -279,7 +279,7 @@ export default function Hero() {
               <motion.span
                 initial={{ y: "100%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 0.6 }}
-                transition={{ duration: 1.2, delay: 0.9, ease: EASE_LUXURY }}
+                transition={{ duration: 1.2, delay: 0.9, ease: EASE_OUT_EXPO }}
                 className="block font-cormorant italic text-4xl lg:text-7xl text-[var(--color-text-secondary)] font-light shrink-0 p-2"
               >
                 digital

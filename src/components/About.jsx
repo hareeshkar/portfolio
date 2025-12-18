@@ -584,7 +584,7 @@ export default function About() {
                     name="HAREESHKAR RAVI"
                     title="DIGITAL ARCHITECT"
                     handle="ID_94021"
-                    avatarUrl="profile.jpg"
+                    avatarUrl="profile-new.jpg"
                     externalSpotlightPosition={spotlightPos}
                     isAutoSpotlightActive={Boolean(spotlightPos)}
                   />

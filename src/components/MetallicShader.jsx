@@ -14,9 +14,10 @@ const isMobile =
     navigator.userAgent
   );
 const isLowEndDevice = navigator.hardwareConcurrency <= 4 || isMobile;
-const MAX_FPS = isLowEndDevice ? 20 : 45; // Slightly increased for smoother animation
+const MAX_FPS = isLowEndDevice ? 20 : 45;
 const FRAME_TIME = 1000 / MAX_FPS;
 
+// WebGL2 shaders - adapted from existing metallic paint effect
 const vertexShaderSource = `#version 300 es
 precision highp float;
 in vec2 a_position;
@@ -312,7 +313,7 @@ function MetallicPaint({ imageData, params = defaultParams, renderSize }) {
     const uniforms = uniformsRef.current;
     if (!gl || !Object.keys(uniforms).length || !imageData || !isReady) return;
 
-    const FRAME_SKIP = isLowEndDevice ? 3 : 1; // Increased skip on low-end
+    const FRAME_SKIP = isLowEndDevice ? 3 : 1;
     let animFrameId = null;
     let frameCount = 0;
     let lastFrameTime = performance.now();
@@ -327,6 +328,7 @@ function MetallicPaint({ imageData, params = defaultParams, renderSize }) {
 
       const state = animationStateRef.current;
 
+      // Frame skipping for performance
       if (FRAME_SKIP > 0) {
         frameCount++;
         if (frameCount % (FRAME_SKIP + 1) !== 0) {
@@ -348,7 +350,7 @@ function MetallicPaint({ imageData, params = defaultParams, renderSize }) {
       accumulatedTime = 0;
 
       state.totalTime += deltaTime * memoizedParams.speed;
-      state.totalTime = state.totalTime % 12000; // Further reduced cycle
+      state.totalTime = state.totalTime % 12000;
 
       gl.uniform1f(uniforms.u_time, state.totalTime);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);

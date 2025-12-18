@@ -1,14 +1,14 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
-// Default spring physics for a smooth, premium feel
+// Spring config for smooth tilt effect
 const defaultSpringValues = {
   stiffness: 150,
   damping: 20,
   mass: 1.2,
 };
 
-// Optimized spring config for low-end devices
+// Reduced motion for low-end devices
 const lowEndSpringValues = {
   stiffness: 100,
   damping: 25,
@@ -59,14 +59,14 @@ const TiltedImage = ({
   const springRotateY = useSpring(rotateY, optimizedSpring);
   const springScale = useSpring(1, optimizedSpring);
 
-  // Throttled RAF-based mouse tracking with adaptive frame rate
+  // Throttled mouse tracking
   const handleMouseMove = useCallback(
     (e) => {
       if (!enableTilt || isReducedMotion || isTouchDevice || !ref.current)
         return;
 
       const now = performance.now();
-      const throttle = isLowEnd ? 32 : 16; // 30fps on low-end, 60fps on high-end
+      const throttle = isLowEnd ? 32 : 16; // 30fps or 60fps
 
       if (now - lastUpdateRef.current < throttle) return;
 
@@ -109,7 +109,6 @@ const TiltedImage = ({
     };
   }, []);
 
-  // Determine if tilt should be applied
   const shouldTilt = enableTilt && !isReducedMotion && !isTouchDevice;
 
   return (

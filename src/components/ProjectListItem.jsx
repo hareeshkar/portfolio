@@ -42,12 +42,31 @@ const ProjectListItem = ({
           </h3>
         </div>
 
-        <div className="hidden md:flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-4 group-hover:translate-x-0">
-          <span className="font-mono text-xs text-accent tracking-widest uppercase">
-            View Case Study
-          </span>
-          <FiArrowUpRight className="text-accent text-xl" />
-        </div>
+        {/* Right-side link: renamed to "View Project" and links to project's github (with fallback) */}
+        {/*
+          Using an anchor here so the control is actionable.
+          Fallback to main github if project.githubLink is falsy or a placeholder.
+        */}
+        {(() => {
+          const repo =
+            project.githubLink && project.githubLink !== "#" 
+              ? project.githubLink 
+              : "https://github.com/hareeshkar";
+          return (
+            <a
+              href={repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-4 group-hover:translate-x-0"
+              aria-label={`View project ${project.title}`}
+            >
+              <span className="font-mono text-xs text-accent tracking-widest uppercase">
+                View Project
+              </span>
+              <FiArrowUpRight className="text-accent text-xl" />
+            </a>
+          );
+        })()}
       </div>
 
       <div className="flex items-center gap-4 mt-4 ml-0 md:ml-14">

@@ -36,7 +36,7 @@ const TechBracket = ({ position = "top-left", delay = 0 }) => {
         `}
         style={{ height: "100%" }}
       />
-      
+
       {/* Decorative Vertex Block (The "Join") */}
       <div
         className={`absolute w-1.5 h-1.5 bg-[var(--color-text-primary)] border border-[var(--color-accent)]
@@ -59,9 +59,8 @@ const ArchitectCard = ({
   const rafId = useRef(null);
   const scrollTo = useLenisScroll();
 
-  // --- PHYSICS ENGINE V2 ---
-  // Smoother damping for a "heavy luxury" feel
-  const damping = 0.06; // Lower value = heavier, smoother inertia
+  // Linear interpolation for smooth mouse follow
+  const damping = 0.06;
   const currentMouse = useRef({ x: 0, y: 0 });
   const targetMouse = useRef({ x: 0, y: 0 });
 
@@ -72,7 +71,7 @@ const ArchitectCard = ({
   const touchEndY = useRef(0);
 
   const animate = useCallback(() => {
-    // Linear interpolation for smooth follow
+    // Lerp current position towards target
     const lx =
       currentMouse.current.x +
       (targetMouse.current.x - currentMouse.current.x) * damping;
@@ -85,7 +84,7 @@ const ArchitectCard = ({
     if (cardRef.current) {
       // Constrained rotation range for stability
       const rotateX = (ly * -8).toFixed(3); // Tilt Max 8deg
-      const rotateY = (lx * 8).toFixed(3);  // Pan Max 8deg
+      const rotateY = (lx * 8).toFixed(3); // Pan Max 8deg
 
       cardRef.current.style.setProperty("--rotate-x", `${rotateX}deg`);
       cardRef.current.style.setProperty("--rotate-y", `${rotateY}deg`);
@@ -124,21 +123,27 @@ const ArchitectCard = ({
   }, []);
 
   // --- TOUCH HANDLERS (Mobile Diorama Mode) ---
-  const handleTouchStart = useCallback((e) => {
-    if (!isMobile) return;
-    touchStartY.current = e.touches[0].clientY;
-    setIsMobileActive(true);
-  }, [isMobile]);
+  const handleTouchStart = useCallback(
+    (e) => {
+      if (!isMobile) return;
+      touchStartY.current = e.touches[0].clientY;
+      setIsMobileActive(true);
+    },
+    [isMobile]
+  );
 
-  const handleTouchMove = useCallback((e) => {
-    if (!isMobile) return;
-    touchEndY.current = e.touches[0].clientY;
-  }, [isMobile]);
+  const handleTouchMove = useCallback(
+    (e) => {
+      if (!isMobile) return;
+      touchEndY.current = e.touches[0].clientY;
+    },
+    [isMobile]
+  );
 
   const handleTouchEnd = useCallback(() => {
     if (!isMobile) return;
     const swipeDistance = touchStartY.current - touchEndY.current;
-    
+
     // Dismiss if swiping, toggle if tapping
     if (Math.abs(swipeDistance) > 30) {
       setIsMobileActive(false);
@@ -165,14 +170,17 @@ const ArchitectCard = ({
   }, [isMobileActive, isMobile]);
 
   // --- MOUSE HANDLERS (Desktop Parallax) ---
-  const handleMouseMove = useCallback((e) => {
-    if (isMobile || !cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    // Normalize coordinate space (-0.5 to 0.5)
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    targetMouse.current = { x, y };
-  }, [isMobile]);
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (isMobile || !cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      // Normalize coordinate space (-0.5 to 0.5)
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      targetMouse.current = { x, y };
+    },
+    [isMobile]
+  );
 
   const handleMouseLeave = () => {
     targetMouse.current = { x: 0, y: 0 };
@@ -205,25 +213,26 @@ const ArchitectCard = ({
 
         {/* LAYER 2: The Identity Plane (Image + HUD Borders) */}
         <div className="architect-image-plane">
-          
           {/* --- NEW: LUXURY L-BRACKETS --- */}
           {/* Top-Left Gold Bracket */}
           <TechBracket position="top-left" delay={0.2} />
-          
+
           {/* Bottom-Right Gold Bracket */}
           <TechBracket position="bottom-right" delay={0.4} />
 
           {/* Additional 'REC' indicator for feed aesthetic */}
           <div className="absolute top-3 right-3 z-30 flex items-center gap-2 pointer-events-none">
             <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]"></span>
-            <span className="font-mono-tech text-[8px] tracking-widest text-[var(--color-text-primary)] opacity-80">LIVE_FEED</span>
+            <span className="font-mono-tech text-[8px] tracking-widest text-[var(--color-text-primary)] opacity-80">
+              LIVE_FEED
+            </span>
           </div>
 
           <div className="image-wrapper">
             <div className="image-noise"></div>
             <img src={avatarUrl} alt={name} decoding="async" loading="lazy" />
           </div>
-          
+
           {/* Original accent border kept as a subtle inner frame */}
           <div className="image-border-accent opacity-40"></div>
         </div>
@@ -267,7 +276,8 @@ const ArchitectCard = ({
                 <span
                   className="w-1.5 h-1.5 rounded-full bg-[var(--color-text-primary)] animate-pulse"
                   style={{
-                    boxShadow: "0 0 8px var(--color-text-primary), 0 0 16px var(--color-text-primary)",
+                    boxShadow:
+                      "0 0 8px var(--color-text-primary), 0 0 16px var(--color-text-primary)",
                   }}
                 />
                 ONLINE
@@ -285,7 +295,7 @@ const ArchitectCard = ({
           >
             {/* Button Sweep Effect */}
             <span className="absolute inset-0 w-0 bg-[var(--color-accent)] transition-all duration-[0.4s] ease-out group-hover:w-full opacity-10"></span>
-            
+
             <span className="relative flex items-center gap-2 justify-center">
               <TextScramble
                 text="CONNECT_NOW"

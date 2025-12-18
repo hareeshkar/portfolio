@@ -4,19 +4,14 @@ const getParticlePresets = (theme) => {
   const isLight = theme === "light";
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-  // --- THE HIGH-CONTRAST COLOR STRATEGY ---
-  const lightModeColor = "#1C1B1A"; // Dark Charcoal Ink
-  const darkModeColor = "#DAA520"; // Brilliant Gold
+  const lightModeColor = "#1C1B1A";
+  const darkModeColor = "#DAA520";
   const prominentColor = isLight ? lightModeColor : darkModeColor;
-
-  // --- MOBILE TILT DETECTION (for parallax on mobile) ---
-  const enableTiltParallax = isMobile && typeof window !== "undefined";
 
   return {
     // 1. HERO: "ETHEREAL CONSTELLATION"
     hero: {
       fpsLimit: 60,
-      detectRetina: true,
       particles: {
         number: { value: isMobile ? 60 : 70 }, // Optimized for 60fps
         color: { value: prominentColor },
@@ -67,7 +62,7 @@ const getParticlePresets = (theme) => {
             },
           },
           onMove: {
-            enable: enableTiltParallax, // Tilt parallax on mobile
+            enable: isMobile && typeof window !== "undefined", // Tilt parallax on mobile
             parallax: {
               enable: true,
               smooth: 25,
@@ -155,7 +150,7 @@ const getParticlePresets = (theme) => {
             },
           },
           onMove: {
-            enable: enableTiltParallax, // Tilt parallax on mobile
+            enable: isMobile && typeof window !== "undefined", // Tilt parallax on mobile
             parallax: {
               enable: false, // Disabled mouse parallax
               smooth: 15,
@@ -225,7 +220,7 @@ const getParticlePresets = (theme) => {
             },
           },
           onMove: {
-            enable: enableTiltParallax, // Tilt parallax on mobile
+            enable: isMobile && typeof window !== "undefined", // Tilt parallax on mobile
             parallax: {
               enable: true,
               smooth: 25,
@@ -389,7 +384,7 @@ const getParticlePresets = (theme) => {
             },
           },
           onMove: {
-            enable: enableTiltParallax,
+            enable: isMobile && typeof window !== "undefined",
             parallax: {
               enable: true,
               smooth: 50,
