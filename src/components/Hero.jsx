@@ -301,7 +301,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* --- MANIFESTO (Asymmetrical Layout) --- */}
+        {/* --- MANIFESTO (Asymmetrical Layout) -- */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
