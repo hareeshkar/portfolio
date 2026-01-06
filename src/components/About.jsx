@@ -425,7 +425,6 @@ export default function About() {
   const architectCardRef = useRef(null);
   const statRefs = useRef([]);
   const [showAnnotations, setShowAnnotations] = useState(false);
-  const [spotlightPos, setSpotlightPos] = useState(null);
   const borderLineRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -491,7 +490,7 @@ export default function About() {
         sectionRef.current = node;
         ref(node);
       }}
-      className="relative section-padding bg-transparent text-[var(--color-text-primary)] z-10 overflow-hidden min-h-screen"
+      className="relative bg-transparent text-[var(--color-text-primary)] z-10 overflow-hidden min-h-screen py-16 px-6"
     >
       <GlobalStyles />
       <TechSeparator />
@@ -513,7 +512,6 @@ export default function About() {
         finalX="-20%"
         finalY="-30%"
         inView={inView}
-        onUpdate={setSpotlightPos}
       />
       <AnnotationLines
         isActive={showAnnotations}
@@ -522,7 +520,7 @@ export default function About() {
         color="var(--color-accent-glow)"
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 z-20 pt-24 lg:pt-32">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 z-20 pt-12 lg:pt-16">
         {/* --- HEADER (Animates Every Time) --- */}
         <motion.div
           initial="hidden"
@@ -531,7 +529,7 @@ export default function About() {
           variants={containerStagger}
         >
           {/* --- HEADER --- */}
-          <div className="flex flex-col lg:flex-row gap-12 mb-32 border-b border-white/40 pb-12">
+          <div className="flex flex-col lg:flex-row gap-12 mb-16 border-b border-white/40 pb-12">
             <motion.div className="lg:w-2/3" variants={cinematicReveal}>
               <div className="inline-flex items-center gap-3 mb-8">
                 <div className="h-[1px] w-12 bg-[var(--color-accent)]"></div>
@@ -554,7 +552,8 @@ export default function About() {
             >
               <p className="font-mono-tech text-[10px] text-[var(--color-text-secondary)] leading-relaxed tracking-widest">
                 [ STATUS: AVAILABLE ]<br />
-                [ DISCIPLINE: FULL-STACK ]<br />[ LOCATION: CARDIFF, UK ]
+                [ DISCIPLINE: FULL-STACK ]<br />[ LOCATION: BATTICALOA, SRI
+                LANKA ]
               </p>
             </motion.div>
           </div>
@@ -585,8 +584,6 @@ export default function About() {
                     title="DIGITAL ARCHITECT"
                     handle="ID_94021"
                     avatarUrl="profile.webp"
-                    externalSpotlightPosition={spotlightPos}
-                    isAutoSpotlightActive={Boolean(spotlightPos)}
                   />
                   <div className="flex justify-between mt-4 px-2 font-mono-tech text-[9px] text-[var(--color-accent)] opacity-60 tracking-[0.2em]">
                     <span>FIG_1.0</span>
@@ -702,7 +699,7 @@ export default function About() {
 
           {/* --- ANIMATED DATA HUD (STATS) --- */}
           <motion.div
-            className="mt-40 mb-32 relative border-y border-[var(--color-border)] bg-[var(--color-surface)]/50 backdrop-blur-sm"
+            className="mt-20 mb-16 relative border-y border-[var(--color-border)] bg-[var(--color-surface)]/50 backdrop-blur-sm"
             variants={cinematicReveal}
           >
             <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--color-border)]">
@@ -775,7 +772,7 @@ export default function About() {
 
           {/* --- FOOTER --- */}
           <motion.div
-            className="mt-60 mb-24 text-center"
+            className="mt-24 mb-12 text-center"
             variants={cinematicReveal}
           >
             <div className="font-cinzel text-[var(--color-accent)] opacity-10 text-[120px] leading-none select-none pointer-events-none">

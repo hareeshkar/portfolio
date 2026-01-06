@@ -68,7 +68,7 @@ const Contact = () => {
     <section
       id="contact"
       ref={containerRef}
-      className="relative min-h-screen bg-transparent py-24 sm:py-32 overflow-hidden"
+      className="relative min-h-screen bg-transparent py-16 px-6 overflow-hidden"
     >
       {/* Background Atmosphere - REMOVED ALL YELLOW TINTS */}
       <div className="absolute inset-0 z-0 pointer-events-none">

@@ -59,8 +59,8 @@ const ArchitectCard = ({
   const rafId = useRef(null);
   const scrollTo = useLenisScroll();
 
-  // Linear interpolation for smooth mouse follow
-  const damping = 0.06;
+  // Enhanced Linear interpolation for ultra-smooth mouse follow
+  const damping = 0.12; // Increased from 0.06 for more responsive tracking
   const currentMouse = useRef({ x: 0, y: 0 });
   const targetMouse = useRef({ x: 0, y: 0 });
 
@@ -82,26 +82,65 @@ const ArchitectCard = ({
     currentMouse.current = { x: lx, y: ly };
 
     if (cardRef.current) {
-      // Constrained rotation range for stability
-      const rotateX = (ly * -8).toFixed(3); // Tilt Max 8deg
-      const rotateY = (lx * 8).toFixed(3); // Pan Max 8deg
+      // Enhanced 3D rotation ranges for dramatic depth
+      const rotateX = (ly * -15).toFixed(3); // Increased from -8 to -15deg
+      const rotateY = (lx * 15).toFixed(3); // Increased from 8 to 15deg
+      const rotateZ = (lx * ly * 5).toFixed(3); // NEW: Z-axis twist based on both axes
 
       cardRef.current.style.setProperty("--rotate-x", `${rotateX}deg`);
       cardRef.current.style.setProperty("--rotate-y", `${rotateY}deg`);
+      cardRef.current.style.setProperty("--rotate-z", `${rotateZ}deg`);
 
-      // Dynamic Lighting Calculations
+      // Enhanced Dynamic Lighting Calculations with more precision
       const pointerXPercent = (lx + 0.5) * 100;
       const pointerYPercent = (ly + 0.5) * 100;
 
       cardRef.current.style.setProperty("--pointer-x", `${pointerXPercent}%`);
       cardRef.current.style.setProperty("--pointer-y", `${pointerYPercent}%`);
 
-      // Parallax Depth Calculations
-      const parallaxFast = (lx * 40).toFixed(2);
-      const parallaxSlow = (lx * 20).toFixed(2);
+      // Multi-layered Parallax Depth Calculations for enhanced 3D effect
+      const parallaxUltraFast = (lx * 60).toFixed(2); // NEW: Ultra-fast layer
+      const parallaxFast = (lx * 35).toFixed(2); // Increased from 40
+      const parallaxMedium = (lx * 15).toFixed(2); // NEW: Medium layer
+      const parallaxSlow = (lx * 8).toFixed(2); // Reduced from 20 for subtle depth
 
+      // Vertical parallax for more 3D immersion
+      const parallaxYUltraFast = (ly * 40).toFixed(2);
+      const parallaxYFast = (ly * 25).toFixed(2);
+      const parallaxYMedium = (ly * 12).toFixed(2);
+      const parallaxYSlow = (ly * 5).toFixed(2);
+
+      cardRef.current.style.setProperty(
+        "--parallax-ultra-fast",
+        `${parallaxUltraFast}px`
+      );
       cardRef.current.style.setProperty("--parallax-fast", `${parallaxFast}px`);
+      cardRef.current.style.setProperty(
+        "--parallax-medium",
+        `${parallaxMedium}px`
+      );
       cardRef.current.style.setProperty("--parallax-slow", `${parallaxSlow}px`);
+
+      cardRef.current.style.setProperty(
+        "--parallax-y-ultra-fast",
+        `${parallaxYUltraFast}px`
+      );
+      cardRef.current.style.setProperty(
+        "--parallax-y-fast",
+        `${parallaxYFast}px`
+      );
+      cardRef.current.style.setProperty(
+        "--parallax-y-medium",
+        `${parallaxYMedium}px`
+      );
+      cardRef.current.style.setProperty(
+        "--parallax-y-slow",
+        `${parallaxYSlow}px`
+      );
+
+      // Dynamic scale based on mouse position for breathing effect
+      const dynamicScale = (1 + Math.abs(lx * ly) * 0.05).toFixed(3);
+      cardRef.current.style.setProperty("--dynamic-scale", dynamicScale);
     }
 
     rafId.current = requestAnimationFrame(animate);

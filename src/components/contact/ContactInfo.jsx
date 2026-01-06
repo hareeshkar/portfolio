@@ -114,12 +114,12 @@ const ContactInfo = () => {
             CURRENT_COORDINATES
           </span>
           <span className="font-cinzel text-lg text-[var(--color-text-primary)]">
-            Cardiff, United Kingdom
+            Batticaloa, Sri Lanka
           </span>
         </div>
         <div className="text-right opacity-60">
           <span className="font-mono-tech text-[9px] text-[var(--color-text-secondary)]">
-            51.4816° N <br /> 3.1791° W
+            7.7102° N <br /> 81.6924° E
           </span>
         </div>
       </motion.div>

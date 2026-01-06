@@ -26,7 +26,7 @@
     --color-accent: #a38848; /* Oxidized Antique Gold */
     --color-accent-hover: #8a7035;
     --color-accent-glow: rgba(163, 136, 72, 0.25);
-    --color-accent-light: rgba(163, 136, 72, 0.1);
+    --color-accent-light: rgba(163, 136, 72, 0.25);
 
     /* Structural */
     --color-border: rgba(20, 20, 19, 0.08);
@@ -63,7 +63,7 @@
     --color-accent: #c2a370; /* Polished Antique Gold */
     --color-accent-hover: #d4b885;
     --color-accent-glow: rgba(194, 163, 112, 0.35);
-    --color-accent-light: rgba(194, 163, 112, 0.15);
+    --color-accent-light: rgba(194, 163, 112, 0.35);
 
     /* Structural */
     --color-border: rgba(255, 255, 255, 0.08);

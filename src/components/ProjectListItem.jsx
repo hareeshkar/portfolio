@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
@@ -9,6 +9,7 @@ const ProjectListItem = ({
   setHoveredProject,
   hoveredProject,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const isHovered = hoveredProject === index;
   const isDimmed = hoveredProject !== null && !isHovered;
 
@@ -69,15 +70,23 @@ const ProjectListItem = ({
         })()}
       </div>
 
-      <div className="flex items-center gap-4 mt-4 ml-0 md:ml-14">
-        {project.techStack.slice(0, 4).map((tech, i) => (
-          <span
-            key={i}
-            className="font-mono text-xs text-text-secondary uppercase tracking-wider"
+      <div className="mt-4 ml-0 md:ml-14 max-w-3xl">
+        <p className="text-text-secondary max-w-prose leading-relaxed text-base">
+          {project.description &&
+            (isExpanded
+              ? project.description
+              : project.description.length > 140
+              ? project.description.slice(0, 137) + "…"
+              : project.description)}
+        </p>
+        {project.description && project.description.length > 140 && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-accent hover:text-accent/80 text-sm font-mono uppercase tracking-wider mt-2 transition-colors duration-300"
           >
-            {tech}
-          </span>
-        ))}
+            {isExpanded ? "Read Less" : "Read More"}
+          </button>
+        )}
       </div>
     </motion.div>
   );

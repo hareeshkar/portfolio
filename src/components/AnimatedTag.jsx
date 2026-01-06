@@ -14,7 +14,7 @@ const AnimatedTag = ({ text }) => {
 
   return (
     <motion.div
-      className="relative inline-block overflow-hidden rounded-full border border-border px-3 py-1"
+      className="relative inline-block overflow-hidden rounded-full border border-border px-4 py-2"
       initial="rest"
       whileHover="hover"
       animate="rest"
@@ -29,7 +29,7 @@ const AnimatedTag = ({ text }) => {
       {/* Hover Text */}
       <motion.div
         variants={hoverTextVariants}
-        className="absolute top-0 left-0 flex text-xs font-medium text-accent px-3 py-1"
+        className="absolute top-0 left-0 flex text-xs font-medium text-accent px-4 py-2"
       >
         {text}
       </motion.div>

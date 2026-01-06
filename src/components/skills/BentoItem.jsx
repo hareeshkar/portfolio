@@ -29,7 +29,7 @@ const BentoItem = ({
       </div>
 
       {/* Content */}
-      <div className="relative z-10 p-6 h-full flex flex-col">
+      <div className="relative z-10 p-4 h-full flex flex-col">
         {(title || subtitle) && (
           <div className="mb-6">
             {subtitle && (

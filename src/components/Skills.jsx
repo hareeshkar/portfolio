@@ -75,7 +75,7 @@ export default function Skills() {
     <section
       id="skills"
       ref={sectionRef}
-      className="relative py-20 md:py-32 bg-transparent overflow-hidden min-h-screen"
+      className="relative py-16 px-6 bg-transparent overflow-hidden min-h-screen"
     >
       <TechSeparator />
 

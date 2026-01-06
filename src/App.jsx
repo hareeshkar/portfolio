@@ -9,7 +9,7 @@ import SectionObserver from "./components/SectionObserver";
 
 // Lazy load heavy sections for better performance
 const About = React.lazy(() => import("./components/About"));
-const Projects = React.lazy(() => import("./components/Projects"));
+const Projects = React.lazy(() => import("./components/project"));
 const Skills = React.lazy(() => import("./components/Skills"));
 const Contact = React.lazy(() =>
   import("./components/Contact").catch(() => {

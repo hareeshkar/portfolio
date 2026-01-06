@@ -162,7 +162,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative w-full h-screen flex flex-col bg-transparent text-[var(--color-text-primary)] overflow-hidden"
+      className="relative w-full h-screen flex flex-col bg-transparent text-[var(--color-text-primary)] overflow-hidden py-16 px-6"
     >
       <GlobalStyles />
 

@@ -24,7 +24,7 @@ const Enhanced3DProjectCard = ({
       sensitivity={0.04}
       rotationStrength={{ x: 1.0, y: 1.5 }}
     >
-      <Enhanced3DCardBody className="bg-surface relative group/card dark:hover:shadow-2xl dark:hover:shadow-accent/[0.1] border border-border/30 w-full h-[600px] rounded-2xl p-6 hover:border-accent/50 transition-colors duration-300 flex flex-col shadow-lg hover:shadow-2xl hover:shadow-accent/20">
+      <Enhanced3DCardBody className="bg-surface relative group/card dark:hover:shadow-2xl dark:hover:shadow-accent/[0.1] border border-border/30 w-full h-[600px] rounded-2xl p-4 hover:border-accent/50 transition-colors duration-300 flex flex-col shadow-lg hover:shadow-2xl hover:shadow-accent/20">
         {/* Enhanced Project Index with 3D depth */}
         <Enhanced3DCardItem
           translateZ={60}
@@ -84,7 +84,7 @@ const Enhanced3DProjectCard = ({
                 translateZ={20 + i * 5}
                 rotateY={i * 3}
                 scale={1.05}
-                className="px-3 py-1 bg-surface-secondary border border-border rounded-full text-xs hover:bg-accent/10 transition-all duration-200"
+                className="px-4 py-2 bg-surface-secondary border border-border rounded-full text-xs hover:bg-accent/10 transition-all duration-200"
               >
                 <MaterialTooltip techName={tech} delay={0.5}>
                   <TextScramble
@@ -99,7 +99,7 @@ const Enhanced3DProjectCard = ({
               <Enhanced3DCardItem
                 translateZ={45}
                 rotateY={12}
-                className="px-3 py-1 bg-surface-secondary border border-border rounded-full text-xs font-medium text-text-secondary"
+                className="px-4 py-2 bg-surface-secondary border border-border rounded-full text-xs font-medium text-text-secondary"
               >
                 +{techStack.length - 4}
               </Enhanced3DCardItem>

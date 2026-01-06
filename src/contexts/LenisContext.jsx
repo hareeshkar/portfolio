@@ -23,18 +23,22 @@ export const LenisProvider = ({ children }) => {
   const lenisRef = useRef(null);
 
   useEffect(() => {
+    // Enhanced Lenis config with better physics
     const lenis = new Lenis({
       duration: 1.5,
-      easing: (t) => 1 - Math.pow(1 - t, 5), // easeOutQuint
+      easing: (t) => 1 - Math.pow(1 - t, 5), // easeOutQuint for smooth deceleration
       direction: "vertical",
       smooth: true,
       smoothTouch: true,
-      touchMultiplier: 2.5,
-      wheelMultiplier: 1.2,
+      touchMultiplier: 2.0, // Slightly reduced for more control
+      wheelMultiplier: 1.1, // More refined wheel scrolling
+      infinite: false,
+      syncTouch: false, // Prevents conflict between touch and Lenis
     });
 
     lenisRef.current = lenis;
 
+    // RAF loop for Lenis - properly manages scroll physics
     let rafId;
     const raf = (time) => {
       lenis.raf(time);
@@ -55,20 +59,27 @@ export const LenisProvider = ({ children }) => {
 
 /**
  * Helper hook for smooth scrolling to targets
- * @returns {Function} scrollTo function with dynamic duration
+ * Intelligently handles scrolling with proper offset calculation and physics
+ * @returns {Function} scrollTo function with dynamic duration and smooth easing
  */
 export const useLenisScroll = () => {
   const lenisRef = useLenis();
 
   const scrollTo = (target, opts = {}) => {
+    const { offset = 0, duration: customDuration, easing: customEasing } = opts;
+
     try {
       if (!lenisRef?.current) {
         // Fallback to native scroll
         if (typeof target === "string") {
           const el = document.querySelector(target);
-          if (el) el.scrollIntoView({ behavior: "smooth" });
+          if (el) {
+            const offsetTop =
+              el.getBoundingClientRect().top + window.scrollY + offset;
+            window.scrollTo({ top: offsetTop, behavior: "smooth" });
+          }
         } else if (typeof target === "number") {
-          window.scrollTo({ top: target, behavior: "smooth" });
+          window.scrollTo({ top: target + offset, behavior: "smooth" });
         }
         return;
       }
@@ -76,31 +87,62 @@ export const useLenisScroll = () => {
       const currentY = window.scrollY;
       let targetY = 0;
 
+      // Calculate target position based on input type
       if (typeof target === "string") {
         const el = document.querySelector(target);
-        if (el) targetY = el.offsetTop;
+        if (!el) {
+          console.warn(`Element not found: ${target}`);
+          return;
+        }
+        // Get accurate position: getBoundingClientRect for better accuracy
+        targetY = el.getBoundingClientRect().top + window.scrollY + offset;
       } else if (typeof target === "number") {
-        targetY = target;
+        targetY = target + offset;
       }
 
-      const distance = Math.abs(targetY - currentY);
-      const duration = Math.min(3.5, Math.max(1.5, distance / 600));
+      // Clamp target to valid scroll range
+      targetY = Math.max(
+        0,
+        Math.min(
+          targetY,
+          document.documentElement.scrollHeight - window.innerHeight
+        )
+      );
 
-      lenisRef.current.scrollTo(target, {
-        ...opts,
-        duration,
-        easing: (t) =>
-          t < 0.5 ? 8 * t * t * t * t : (1 - Math.pow(-2 * t + 2, 4)) / 2,
-        lock: true,
+      const distance = Math.abs(targetY - currentY);
+
+      // Smart duration calculation: longer distances = longer duration (but capped)
+      // This maintains physics consistency while preventing too-fast or too-slow scrolls
+      const calculatedDuration = Math.min(4, Math.max(0.8, distance / 500));
+      const finalDuration = customDuration ?? calculatedDuration;
+
+      // Use custom easing if provided, otherwise use smooth cubic easing
+      const finalEasing =
+        customEasing ??
+        ((t) => {
+          // Smooth cubic ease-in-out for consistent physics
+          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        });
+
+      // Scroll without lock to prevent jarring interruption
+      lenisRef.current.scrollTo(targetY, {
+        duration: finalDuration,
+        easing: finalEasing,
+        // Don't use lock: true as it can cause jarring when interrupted
+        immediate: false,
       });
     } catch (err) {
       console.error("Scroll error:", err);
-      // Fallback to native behavior
+      // Graceful fallback to native behavior
       if (typeof target === "string") {
         const el = document.querySelector(target);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
+        if (el) {
+          const offsetTop =
+            el.getBoundingClientRect().top + window.scrollY + offset;
+          window.scrollTo({ top: offsetTop, behavior: "smooth" });
+        }
       } else if (typeof target === "number") {
-        window.scrollTo({ top: target, behavior: "smooth" });
+        window.scrollTo({ top: target + offset, behavior: "smooth" });
       }
     }
   };

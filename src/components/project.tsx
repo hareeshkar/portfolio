@@ -1,8 +1,25 @@
-import React, { useMemo } from "react";
+/// <reference types="vite/client" />
+// import React, { useMemo } from "react";
 import SectionObserver from "./SectionObserver";
 import ProjectGallery from "./ProjectGallery";
 
 const projectsData = [
+  {
+    title: "PCA Cinemax — Enterprise Cinema Booking Platform",
+    description:
+      "Full-stack ticketing system with high-concurrency handling and Stripe payments. Engineered with Next.js 14 App Router and Prisma ORM, implementing real-time seat locking via Supabase to eliminate concurrency issues.",
+    techStack: [
+      "Next.js 14",
+      "TypeScript",
+      "Supabase",
+      "PostgreSQL",
+      "Prisma",
+      "Stripe API",
+    ],
+    liveLink: "#",
+    githubLink: "https://github.com/hareeshkar/pca-cinemax",
+    image: `${import.meta.env.BASE_URL}project_images/pca.jpg`,
+  },
   {
     title: "Synapse Med — AI Clinical Intelligence Engine",
     description:
@@ -17,8 +34,7 @@ const projectsData = [
     ],
     liveLink: "#",
     githubLink: "https://github.com/hareeshkar/synapse-med",
-    image:
-      "https://images.unsplash.com/photo-1581093588401-7b6c4c0c2b6b?q=80&w=1965&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/syn.jpg`,
   },
   {
     title: "Clinical Simulator — iOS Training Platform",
@@ -27,8 +43,7 @@ const projectsData = [
     techStack: ["SwiftUI", "SwiftData", "Firebase", "Gemini/OpenAI APIs"],
     liveLink: "#",
     githubLink: "https://github.com/hareeshkar/ClinicalSimulator",
-    image:
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/ios.png`,
   },
   {
     title: "The Gadget Hub — Enterprise E‑Commerce",
@@ -37,8 +52,7 @@ const projectsData = [
     techStack: ["ASP.NET Core", "C#", "MSSQL", "Entity Framework"],
     liveLink: "#",
     githubLink: "https://github.com/hareeshkar", // fallback
-    image:
-      "https://images.unsplash.com/photo-1542223616-6f2f5aedf1f4?q=80&w=1965&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/gad.jpg`,
   },
   {
     title: "E‑Waste Management Platform",
@@ -47,8 +61,7 @@ const projectsData = [
     techStack: ["PHP", "MySQL", "REST API", "Chart.js"],
     liveLink: "#",
     githubLink: "https://github.com/hareeshkar", // restored project (fallback)
-    image:
-      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/green.jpg`,
   },
   {
     title: "EcoStay Retreat — Resort Management",
@@ -57,8 +70,7 @@ const projectsData = [
     techStack: ["Java", "Android SDK", "SQLite"],
     liveLink: "#",
     githubLink: "https://github.com/hareeshkar", // restored project (fallback)
-    image:
-      "https://images.unsplash.com/photo-1501117716987-c8e4b1d70f1b?q=80&w=1965&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/ecoo.jpg`,
   },
   {
     title: "AI Powered Virtual Try-On Studio",
@@ -67,8 +79,7 @@ const projectsData = [
     techStack: ["React", "TypeScript", "Tailwind CSS", "Vite", "Gemini AI"],
     liveLink: "#",
     githubLink: "https://github.com/hareeshkar", // fallback
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/ge.jpg`,
   },
   {
     title: "AI Powered Attendance System",
@@ -77,8 +88,7 @@ const projectsData = [
     techStack: ["Python", "OpenCV", "PHP", "MySQL", "GSAP"],
     liveLink: null,
     githubLink: "https://github.com/hareeshkar", // fallback
-    image:
-      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/icbt.jpg`,
   },
   {
     title: "Codebase Prompt Packer",
@@ -87,8 +97,7 @@ const projectsData = [
     techStack: ["JavaScript", "VS Code API", "Node.js"],
     liveLink: null,
     githubLink: "https://github.com/hareeshkar/codebase-prompt-packer",
-    image:
-      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop",
+    image: `${import.meta.env.BASE_URL}project_images/co.jpg`,
   },
 ];
 

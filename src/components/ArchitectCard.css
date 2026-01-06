@@ -18,8 +18,9 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  /* Lighter rotation for architectural feel */
-  transform: rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg));
+  /* Enhanced 3D rotation with z-axis and dynamic scaling */
+  transform: rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg))
+    rotateZ(var(--rotate-z, 0deg)) scale(var(--dynamic-scale, 1));
   transition: transform 0.08s linear, scale 0.3s ease;
   will-change: transform;
 }
@@ -36,7 +37,7 @@
 }
 
 .architect-scene:hover .architect-composition {
-  scale: 1.03;
+  scale: calc(1.03 * var(--dynamic-scale, 1));
 }
 
 /* --- LAYER 0: AMBIENT GLOW --- */
@@ -116,14 +117,15 @@
   left: 8%;
   width: 75%;
   height: 65%;
-  transform: translateZ(50px) translateX(var(--parallax-slow));
+  transform: translateZ(50px) translateX(var(--parallax-medium))
+    translateY(var(--parallax-y-medium));
   z-index: 1;
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
 }
 
 .architect-scene:hover .architect-image-plane {
-  transform: translateZ(90px) translateX(var(--parallax-slow)) translateX(-15px)
-    translateY(-15px);
+  transform: translateZ(90px) translateX(var(--parallax-medium))
+    translateY(var(--parallax-y-medium)) translateX(-15px) translateY(-15px);
   opacity: 0.95;
 }
 
@@ -192,7 +194,8 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 50px 100px -25px rgba(0, 0, 0, 0.6),
     inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 20px rgba(255, 255, 255, 0.1);
-  transform: translateZ(160px) translateX(var(--parallax-fast));
+  transform: translateZ(160px) translateX(var(--parallax-fast))
+    translateY(var(--parallax-y-fast));
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -363,12 +366,14 @@
   position: absolute;
   border: 1px solid var(--color-accent);
   opacity: 0;
-  transform: translateZ(100px);
+  transform: translateZ(100px) translateX(var(--parallax-ultra-fast))
+    translateY(var(--parallax-y-ultra-fast));
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 .architect-scene:hover .floating-el {
   opacity: 0.6;
-  transform: translateZ(100px) rotate(25deg) scale(1.1);
+  transform: translateZ(100px) translateX(var(--parallax-ultra-fast))
+    translateY(var(--parallax-y-ultra-fast)) rotate(25deg) scale(1.1);
 }
 
 .floating-el.sq {
