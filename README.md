@@ -4,9 +4,13 @@ A thoughtfully crafted portfolio showcasing full-stack development work, interac
 
 ## 🎬 Live Demo
 
-![Portfolio landing page featuring a dark theme with animated cipher text effect in the hero section, smooth scroll interactions, and performance-optimized layout showcasing full-stack development work and interactive design systems](./public/portfolio_preview.webm)
+<video width="100%" controls>
+  <source src="./public/portfolio_preview.webm" type="video/webm">
+  <source src="./public/portfolio_preview.mp4" type="video/mp4">
+  Your browser does not support the video tag. <a href="https://hareeshkar.github.io/portfolio/">View Live Portfolio</a>
+</video>
 
-[View Live Portfolio](https://hareeshkar.github.io/portfolio/)
+**[View Live Portfolio](https://hareeshkar.github.io/portfolio/)**
 
 ---
 
