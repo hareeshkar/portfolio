@@ -5,8 +5,8 @@ A thoughtfully crafted portfolio showcasing full-stack development work, interac
 ## 🎬 Live Demo
 
 <video width="100%" controls>
-  <source src="./public/portfolio_preview.webm" type="video/webm">
-  <source src="./public/portfolio_preview.mp4" type="video/mp4">
+  <source src="https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.webm" type="video/webm">
+  <source src="https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4" type="video/mp4">
   Your browser does not support the video tag. <a href="https://hareeshkar.github.io/portfolio/">View Live Portfolio</a>
 </video>
 
