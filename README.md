@@ -4,9 +4,9 @@ A thoughtfully crafted portfolio showcasing full-stack development work, interac
 
 ## 🎬 Live Demo
 
-[![Portfolio Preview - Click to watch](https://img.shields.io/badge/▶️_Watch_Demo-Click_Here-blue?style=for-the-badge)](https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4)
+https://github.com/user-attachments/assets/666d1a0b-b616-457f-b934-52453b0d543b
 
-**[🚀 View Live Portfolio](https://hareeshkar.github.io/portfolio/)** | **[📹 Download Video Demo](https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4)**
+**[🚀 Explore My Portfolio](https://hareeshkar.github.io/portfolio/)**
 
 ---
 
