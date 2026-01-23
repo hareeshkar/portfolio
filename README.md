@@ -4,11 +4,9 @@ A thoughtfully crafted portfolio showcasing full-stack development work, interac
 
 ## 🎬 Live Demo
 
-https://github.com/user-attachments/assets/portfolio_preview.mp4
+[![Portfolio Preview - Click to watch](https://img.shields.io/badge/▶️_Watch_Demo-Click_Here-blue?style=for-the-badge)](https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4)
 
-> **Note:** Upload the `public/portfolio_preview.mp4` file directly by dragging it into this README edit on GitHub to enable native video playback. GitHub sanitizes HTML video tags, so videos must be uploaded through the GitHub UI.
-
-**[View Live Portfolio →](https://hareeshkar.github.io/portfolio/)**
+**[🚀 View Live Portfolio](https://hareeshkar.github.io/portfolio/)** | **[📹 Download Video Demo](https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4)**
 
 ---
 
