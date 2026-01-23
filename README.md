@@ -4,13 +4,11 @@ A thoughtfully crafted portfolio showcasing full-stack development work, interac
 
 ## 🎬 Live Demo
 
-<video width="100%" controls>
-  <source src="https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.webm" type="video/webm">
-  <source src="https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4" type="video/mp4">
-  Your browser does not support the video tag. <a href="https://hareeshkar.github.io/portfolio/">View Live Portfolio</a>
-</video>
+https://github.com/user-attachments/assets/portfolio_preview.mp4
 
-**[View Live Portfolio](https://hareeshkar.github.io/portfolio/)**
+> **Note:** Upload the `public/portfolio_preview.mp4` file directly by dragging it into this README edit on GitHub to enable native video playback. GitHub sanitizes HTML video tags, so videos must be uploaded through the GitHub UI.
+
+**[View Live Portfolio →](https://hareeshkar.github.io/portfolio/)**
 
 ---
 
