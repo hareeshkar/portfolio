@@ -1,4 +1,4 @@
-# Portfolio — Full-Stack Developer & UI/UX Engineer
+# Hareeshkar's Portfolio — Full-Stack Developer & UI/UX Engineer
 
 A thoughtfully crafted portfolio showcasing full-stack development work, interactive design systems, and performance-focused architecture. Built with modern tooling and designed to reflect quality over complexity.
 
