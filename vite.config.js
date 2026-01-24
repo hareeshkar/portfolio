@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/portfolio/", // Required for GitHub Pages to serve assets correctly
+  base: "/Hareeshkar_Portfolio/", // Required for GitHub Pages to serve assets correctly
   build: {
     rollupOptions: {
       output: {
