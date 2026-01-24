@@ -4,9 +4,9 @@ A thoughtfully crafted portfolio showcasing full-stack development work, interac
 
 ## 🎬 Live Demo
 
-[![Portfolio Preview - Click to watch](https://img.shields.io/badge/▶️_Watch_Demo-Click_Here-blue?style=for-the-badge)](https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4)
+[![Portfolio Preview - Click to watch](https://img.shields.io/badge/▶️_Watch_Demo-Click_Here-blue?style=for-the-badge)](https://github.com/hareeshkar/Hareeshkar_Portfolio/raw/main/public/portfolio_preview.mp4)
 
-**[🚀 View Live Portfolio](https://hareeshkar.github.io/portfolio/)** | **[📹 Download Video Demo](https://github.com/hareeshkar/portfolio/raw/main/public/portfolio_preview.mp4)**
+**[🚀 View Live Portfolio](https://hareeshkar.github.io/Hareeshkar_Portfolio/)** | **[📹 Download Video Demo](https://github.com/hareeshkar/Hareeshkar_Portfolio/raw/main/public/portfolio_preview.mp4)**
 
 ---
 
@@ -88,8 +88,8 @@ src/
 
 ```bash
 # Clone the repository
-git clone https://github.com/hareeshkar/portfolio.git
-cd portfolio
+git clone https://github.com/hareeshkar/Hareeshkar_Portfolio.git
+cd Hareeshkar_Portfolio
 
 # Install dependencies
 npm install
